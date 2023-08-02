@@ -3,6 +3,8 @@ body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
   margin: 20px;
+  padding: 0;
+  width: 90%;
 }
 
 h1 {
@@ -22,9 +24,9 @@ h1 {
 }
 
 /* Estilos para las etiquetas de los campos */
-label {
+/*label {
   flex: 0 0 100px;
-}
+}*/
 
 /* Estilos para los campos de entrada */
 input[type="text"] {
@@ -87,5 +89,7 @@ button:hover {
   opacity: 1;
 }
 
-.linea-ignorada {
-  background-color: #ffcccc; /* Color de fondo para líneas ignoradas */
+.labelFecha,
+.labelHs {
+  flex: 10%;
+}

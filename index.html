@@ -10,18 +10,19 @@
     <h1>Registro de Trabajos JLC</h1>
     <div id="lineas">
       <div id="linea1">
-        <label for="fecha1"> Fecha:</label>
-        <input type="text" id="fecha1" placeholder="DD/MM" />
-        <label for="horas1">Horas:</label>
-        <input type="text" id="horas1" placeholder="Ej: 8" />
-        <label for="descripcion1">Descripción:</label>
+        <!--<label for="fecha1"> Fecha:</label>-->
+        <input type="text" id="fecha1" placeholder="Fecha" class="labelFecha"/>
+        <!--<label for="horas1">Horas:</label>-->
+        <input type="text" id="horas1" placeholder="Horas" class="labelHs"/>
+        <!--<label for="descripcion1">Descripción:</label>-->
         <input
           type="text"
           id="descripcion1"
-          placeholder="Breve descripción del trabajo"
+          placeholder="Breve descripción del trabajo" 
+          class="labelTrabajo"
         />
-        <button onclick="eliminarLinea(1)">Eliminar</button>
-        <button onclick="insertarLinea(1)">Nueva Línea</button>
+        <button onclick="insertarLinea(1)"> + </button>
+        <button onclick="eliminarLinea(1)"> - </button>
       </div>
       <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
     </div>

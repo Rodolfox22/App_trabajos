@@ -2,14 +2,11 @@ let contadorLineas = 2;
 
 const nuevaLineaHTML = `
 <div id="linea${contadorLineas}">
-<label for="fecha${contadorLineas}"> Fecha:</label>
-<input type="text" id="fecha${contadorLineas}" placeholder="DD/MM">
-    <label for="horas${contadorLineas}">Horas:</label>
-    <input type="text" id="horas${contadorLineas}" placeholder="Ej: 8">
-    <label for="descripcion${contadorLineas}">Descripción:</label>
-    <input type="text" id="descripcion${contadorLineas}" placeholder="Breve descripción del trabajo">
-    <button onclick="eliminarLinea(${contadorLineas})">Eliminar</button>
-    <button onclick="insertarLinea(${contadorLineas})">Nueva Línea</button>
+<input type="text" id="fecha${contadorLineas}" placeholder="Fecha" class="labelFecha">
+    <input type="text" id="horas${contadorLineas}" placeholder="Horas" class="labelHs">
+    <input type="text" id="descripcion${contadorLineas}" placeholder="Breve descripción del trabajo" class="labelTrabajo">
+    <button onclick="insertarLinea(${contadorLineas})"> + </button>
+    <button onclick="eliminarLinea(${contadorLineas})"> - </button>
     </div>
     `;
 
@@ -37,7 +34,6 @@ function insertarLinea(numeroLinea) {
   contadorLineas++;
 }
 
-//Todo: se puede mejorar la logica de esta funcion
 function revisarArchivo() {
   const lineasDiv = document.getElementById("lineas");
   const lineasInputs = lineasDiv.getElementsByTagName("input");
