@@ -91,5 +91,6 @@ button:hover {
 
 .labelFecha,
 .labelHs {
-  flex: 10%;
+  width: 1%;
+  max-width: 50px;
 }
