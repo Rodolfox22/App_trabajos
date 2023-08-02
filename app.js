@@ -3,7 +3,7 @@ let contadorLineas = 2;
 const nuevaLineaHTML = `
 <div id="linea${contadorLineas}">
 <label for="fecha${contadorLineas}"> Fecha:</label>
-<input type="text" id="fecha${contadorLineas}" placeholder="DD/MM/AAAA">
+<input type="text" id="fecha${contadorLineas}" placeholder="DD/MM">
     <label for="horas${contadorLineas}">Horas:</label>
     <input type="text" id="horas${contadorLineas}" placeholder="Ej: 8">
     <label for="descripcion${contadorLineas}">Descripción:</label>
