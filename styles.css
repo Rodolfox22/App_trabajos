@@ -5,6 +5,7 @@ body {
   margin: 20px;
   padding: 0;
   width: 90%;
+  font-size: larger;
 }
 
 h1 {
@@ -22,11 +23,6 @@ h1 {
   align-items: center;
   margin-bottom: 10px;
 }
-
-/* Estilos para las etiquetas de los campos */
-/*label {
-  flex: 0 0 100px;
-}*/
 
 /* Estilos para los campos de entrada */
 input[type="text"] {
@@ -89,8 +85,15 @@ button:hover {
   opacity: 1;
 }
 
-.labelFecha,
-.labelHs {
-  width: 1%;
+.labelCorto{
   max-width: 50px;
+  min-width: 20px;
+}
+
+.empleados {
+  display: grid;
+  margin-block: 10px;
+  text-align: center;
+  width: 50%;
+  max-width: 300px;
 }

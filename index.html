@@ -1,41 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aplicación de Registro de Trabajos JLC</title>
+    <title>Registro de horas JLC</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Registro de Trabajos JLC</h1>
-    <div id="lineas">
-      <div id="linea1">
-        <!--<label for="fecha1"> Fecha:</label>-->
-        <input type="text" id="fecha1" placeholder="Fecha" class="labelFecha"/>
-        <!--<label for="horas1">Horas:</label>-->
-        <input type="text" id="horas1" placeholder="Horas" class="labelHs"/>
-        <!--<label for="descripcion1">Descripción:</label>-->
-        <input
-          type="text"
-          id="descripcion1"
-          placeholder="Breve descripción del trabajo" 
-          class="labelTrabajo"
-        />
-        <button onclick="insertarLinea(1)"> + </button>
-        <button onclick="eliminarLinea(1)"> - </button>
-      </div>
-      <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
+    <div id="operarios">
+      <input type="text" id="operario" placeholder="Ingrese su nombre" />
     </div>
-    <button onclick="agregarLinea()">Nueva Línea</button>
-    <div class="tooltip">
-      <button onclick="generarArchivo()" onmouseover="revisarArchivo()">
-        Generar Archivo
-      </button>
-      <button onclick="revisarArchivo()" onmouseover="revisarArchivo()">
-        Revisar
-      </button>
-      <span class="tooltiptext" id="tooltip">Todas las líneas válidas</span>
-    </div>
+    <button onclick="asignarNombre()">Ingresar</button>
+    <button onclick="asignarNombre()">Abrir</button>
     <script src="app.js"></script>
   </body>
 </html>

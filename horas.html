@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aplicación de Registro de Trabajos JLC</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Registro de Trabajos JLC</h1>
+    <div id="nombre"></div>
+    <div id="lineas">
+      <div id="linea1">
+        <label for="fecha1">1. </label>
+        <input type="text" id="fecha1" placeholder="Fecha" class="labelCorto" />
+        <input type="text" id="horas1" placeholder="Horas" class="labelCorto" />
+        <input
+          type="text"
+          id="descripcion1"
+          placeholder="Breve descripción del trabajo"
+        />
+        <button onclick="insertarLinea(1)">+</button>
+        <button onclick="eliminarLinea(1)">-</button>
+      </div>
+      <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
+    </div>
+    <button onclick="agregarLinea()">Nueva Línea</button>
+    <div class="tooltip">
+      <button onclick="generarArchivo()" onmouseover="revisarArchivo()">
+        Guardar
+      </button>
+      <button onclick="revisarArchivo()" onmouseover="revisarArchivo()">
+        Revisar
+      </button>
+      <span class="tooltiptext" id="tooltip">Todas las líneas válidas</span>
+    </div>
+    <script src="app.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", inicializarPagina2);
+    </script>
+  </body>
+</html>
