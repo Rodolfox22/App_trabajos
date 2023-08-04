@@ -7,11 +7,16 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="operarios">
-      <input type="text" id="operario" placeholder="Ingrese su nombre" />
+    <div class="container">
+      <div id="operarios" class="box">
+        <input type="text" id="operario" placeholder="Ingrese su nombre" />
+        <button onclick="asignarNombre()">Ingresar</button>
+      </div>
+      <div id="archivo" class="box">
+        <input type="file" id="archivoInput" />
+        <button onclick="asignarNombre()">Abrir</button>
+      </div>
     </div>
-    <button onclick="asignarNombre()">Ingresar</button>
-    <button onclick="asignarNombre()">Abrir</button>
     <script src="app.js"></script>
   </body>
 </html>

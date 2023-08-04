@@ -3,6 +3,47 @@ let textoArchivo = "";
 var operarioActivo = "";
 let noNombreOperario = "Trabajos";
 
+function asignarNombre() {
+  let nombreOperario = "";
+
+  const operarioInput = document.getElementById("operario");
+
+  nombreOperario = operarioInput.value.trim();
+  console.log(nombreOperario);
+  if (nombreOperario == "") {
+    nombreOperario = noNombreOperario;
+  }
+
+  localStorage.setItem("nombreOperario", nombreOperario);
+
+  window.location.href = "horas.html";
+}
+
+function inicializarPagina2() {
+  insertarNombre();
+}
+
+function insertarNombre() {
+  var nombreOperario = localStorage.getItem("nombreOperario");
+
+  const lineaNombre = document.getElementById("nombre");
+
+  const insertarLineaNombre = `<h2>${nombreOperario}</h2>`;
+
+  if (nombreOperario !== noNombreOperario) {
+    lineaNombre.insertAdjacentHTML("beforeend", insertarLineaNombre);
+  }
+  operarioActivo = nombreOperario;
+}
+
+function obtenerFechaActual() {
+  const fecha = new Date();
+  const dia = fecha.getDate().toString().padStart(2, "0");
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+  const anio = fecha.getFullYear();
+  return `${dia}-${mes}-${anio}`;
+}
+
 function crearNuevaLineaHTML(lineaActual) {
   return `
     <div id="linea${lineaActual}">
@@ -50,7 +91,7 @@ function revisarArchivo() {
   const lineasInputs = lineasDiv.getElementsByTagName("input");
 
   textoArchivo = "";
-  let lineasIgnoradas = [];
+  let lineasincompletas = [];
   let fechaAnterior = "";
 
   for (let i = 0; i < lineasInputs.length; i += 3) {
@@ -65,17 +106,14 @@ function revisarArchivo() {
     if (horas.trim() !== "" && descripcion.trim() !== "") {
       textoArchivo += `${fecha}\t${horas}\t${descripcion}\t${operarioActivo}\n`;
     } else {
-      /*const numeroLinea = i / 3 + 1;*/
-      const elementoId = lineasInputs[i].id; // Obtener el id del elemento actual
-      const numeroLinea = elementoId.slice(5);
-      lineasIgnoradas.push(numeroLinea);
+      lineasincompletas.push(lineasInputs[i].id.slice(5));
     }
     fechaAnterior = fecha;
   }
 
   const tooltipText =
-    lineasIgnoradas.length > 0
-      ? `Líneas ignoradas: ${lineasIgnoradas.join(", ")}`
+    lineasincompletas.length > 0
+      ? `Líneas incompletas: ${lineasincompletas.join(", ")}`
       : "Todas las líneas válidas";
 
   const tooltip = document.getElementById("tooltip");
@@ -102,45 +140,13 @@ function descargarArchivo(texto) {
   URL.revokeObjectURL(url);
 }
 
-function asignarNombre() {
-  let nombreOperario = "";
+function generarResumen() {}
 
-  const operarioInput = document.getElementById("operario");
+function abrirExistente() {}
 
-  nombreOperario = operarioInput.value.trim();
-  console.log(nombreOperario);
-  if (nombreOperario == "") {
-    nombreOperario = noNombreOperario;
-  }
+/*Obtiene el nombre del operario de el archivo abierto*/
+function obtenerOperario() {}
 
-  localStorage.setItem("nombreOperario", nombreOperario);
+function visualizarResumen() {}
 
-  window.location.href = "horas.html";
-}
-
-function inicializarPagina2() {
-  insertarNombre();
-  /*localStorage.setItem("contadorLineas", "2");*/
-}
-
-function insertarNombre() {
-  var nombreOperario = localStorage.getItem("nombreOperario");
-  console.log(nombreOperario);
-
-  const lineaNombre = document.getElementById("nombre");
-
-  const insertarLineaNombre = `<h2>${nombreOperario}</h2>`;
-
-  if (nombreOperario !== noNombreOperario) {
-    lineaNombre.insertAdjacentHTML("beforeend", insertarLineaNombre);
-  }
-  operarioActivo = nombreOperario;
-}
-
-function obtenerFechaActual() {
-  const fecha = new Date();
-  const dia = fecha.getDate().toString().padStart(2, "0");
-  const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-  const anio = fecha.getFullYear();
-  return `${dia}-${mes}-${anio}`;
-}
+function eliminarResumen() {}

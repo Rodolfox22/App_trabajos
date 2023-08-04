@@ -19,20 +19,24 @@
           id="descripcion1"
           placeholder="Breve descripción del trabajo"
         />
-        <button onclick="insertarLinea(1)">+</button>
-        <button onclick="eliminarLinea(1)">-</button>
+        <button onclick="insertarLinea(1)" class="plusButton">+</button>
+        <button onclick="eliminarLinea(1)" class="minusButton">-</button>
       </div>
       <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
     </div>
-    <button onclick="agregarLinea()">Nueva Línea</button>
-    <div class="tooltip">
-      <button onclick="generarArchivo()" onmouseover="revisarArchivo()">
-        Guardar
-      </button>
-      <button onclick="revisarArchivo()" onmouseover="revisarArchivo()">
-        Revisar
-      </button>
-      <span class="tooltiptext" id="tooltip">Todas las líneas válidas</span>
+    <div class="botonesContainer">
+      <button onclick="agregarLinea()" class="botonMenu">Nueva Línea</button>
+      <button onclick="generarArchivo()" class="botonMenu">Guardar</button>
+      <div class="tooltip">
+        <button
+          onclick="revisarArchivo()"
+          onmouseover="revisarArchivo()"
+          class="botonMenu"
+        >
+          Revisar
+        </button>
+        <span class="tooltiptext" id="tooltip">Todas las líneas válidas</span>
+      </div>
     </div>
     <script src="app.js"></script>
     <script>
