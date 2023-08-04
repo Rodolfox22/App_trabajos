@@ -51,8 +51,8 @@ function crearNuevaLineaHTML(lineaActual) {
       <input type="text" id="fecha${lineaActual}" placeholder="Fecha" class="labelCorto">
       <input type="text" id="horas${lineaActual}" placeholder="Horas" class="labelCorto">
       <input type="text" id="descripcion${lineaActual}" placeholder="Breve descripción del trabajo" class="labelTrabajo">
-      <button onclick="insertarLinea(${lineaActual})"> + </button>
-      <button onclick="eliminarLinea(${lineaActual})"> - </button>
+      <button onclick="insertarLinea(${lineaActual})" class="plusButton"> + </button>
+      <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
     </div>
   `;
 }
