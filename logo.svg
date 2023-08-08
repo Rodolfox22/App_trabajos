@@ -1,0 +1,33 @@
+<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo del logo  -->
+  <rect width="100%" height="100%"  fill="rgba(0, 0, 255, 0.0)"/>
+
+  <!-- Letras "JLC" en color azul -->
+  <text
+    x="50%"
+    y="50%"
+    font-size="48"
+    font-family="Arial, sans-serif"
+    font-weight="bold" 
+    fill="#ff0000"
+    text-anchor="middle"
+    dy=".3em"
+  >
+    JLC
+  </text>
+
+  <!-- Texto "Montajes Industriales" en color gris -->
+  <text
+    x="50%"
+    y="70%"
+    font-size="18"
+    font-family="Arial, sans-serif"
+    font-weight="bold" 
+    fill="#0000ff"
+    text-anchor="middle"
+    dy=".3
+    em"
+  >
+    Montajes Industriales
+  </text>
+</svg>

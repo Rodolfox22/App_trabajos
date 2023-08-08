@@ -12,20 +12,20 @@
     <div id="lineas">
       <div id="linea1">
         <label for="fecha1">1. </label>
-        <input type="text" id="fecha1" placeholder="Fecha" class="labelCorto" />
-        <input type="text" id="horas1" placeholder="Horas" class="labelCorto" />
+        <input type="text" id="fecha1" placeholder="Fecha" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas1')"/>
+        <input type="text" id="horas1" placeholder="Horas" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion1')"/>
         <input
           type="text"
           id="descripcion1"
-          placeholder="Breve descripción del trabajo"
+          placeholder="Breve descripción del trabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton1')"
         />
-        <button onclick="insertarLinea(1)" class="plusButton">+</button>
+        <button onclick="insertarLinea(1)" id="plusButton1" class="plusButton" >+</button>
         <button onclick="eliminarLinea(1)" class="minusButton">-</button>
       </div>
       <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
     </div>
     <div class="botonesContainer">
-      <button onclick="agregarLinea()" class="botonMenu">Nueva Línea</button>
+      <button onclick="agregarLinea()" id="nuevaLinea" class="botonMenu">Nueva Línea</button>
       <button onclick="generarArchivo()" class="botonMenu">Guardar</button>
       <div class="tooltip">
         <button
@@ -34,6 +34,13 @@
           class="botonMenu"
         >
           Revisar
+        </button>
+        <button
+          onclick="compartirWhatsApp()"
+          onmouseover="revisarArchivo()"
+          class="botonMenu"
+        >
+          Wpp
         </button>
         <span class="tooltiptext" id="tooltip">Todas las líneas válidas</span>
       </div>

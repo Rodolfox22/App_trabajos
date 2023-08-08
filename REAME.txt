@@ -1,1 +1,1 @@
-Con ayuda de Chat GPT hice una aplicacion web para estandarizar un registro sencillo de trabajos diarios par la empresa 
+Aplicacion web para estandarizar un registro sencillo de trabajos diarios para una Pyme

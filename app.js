@@ -3,6 +3,7 @@ let textoArchivo = "";
 var operarioActivo = "";
 let noNombreOperario = "Trabajos";
 
+/*Todo: Insertar logo en la portada, insertar logo en el icono */
 function asignarNombre() {
   let nombreOperario = "";
 
@@ -21,6 +22,7 @@ function asignarNombre() {
 
 function inicializarPagina2() {
   insertarNombre();
+  moverAlSiguienteCampo("Mover", "fecha1");
 }
 
 function insertarNombre() {
@@ -48,10 +50,10 @@ function crearNuevaLineaHTML(lineaActual) {
   return `
     <div id="linea${lineaActual}">
       <label for="fecha${lineaActual}">${lineaActual}. </label>
-      <input type="text" id="fecha${lineaActual}" placeholder="Fecha" class="labelCorto">
-      <input type="text" id="horas${lineaActual}" placeholder="Horas" class="labelCorto">
-      <input type="text" id="descripcion${lineaActual}" placeholder="Breve descripción del trabajo" class="labelTrabajo">
-      <button onclick="insertarLinea(${lineaActual})" class="plusButton"> + </button>
+      <input type="text" id="fecha${lineaActual}" placeholder="Fecha" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
+      <input type="text" id="horas${lineaActual}" placeholder="Horas" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
+      <input type="text" id="descripcion${lineaActual}" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')">
+      <button onclick="insertarLinea(${lineaActual})" id= plusButton${lineaActual} class="plusButton"> + </button>
       <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
     </div>
   `;
@@ -65,6 +67,9 @@ function agregarLinea() {
     crearNuevaLineaHTML(contadorLineas)
   );
 
+  const nuevoCampoId = `fecha${contadorLineas}`;
+  moverAlSiguienteCampo("Mover", nuevoCampoId);
+
   contadorLineas++;
 }
 
@@ -77,12 +82,17 @@ function insertarLinea(numeroLinea) {
     crearNuevaLineaHTML(contadorLineas)
   );
 
+  const nuevoCampoId = `fecha${contadorLineas}`;
+  moverAlSiguienteCampo("Mover", nuevoCampoId);
+
   contadorLineas++;
 }
 
 function eliminarLinea(numeroLinea) {
   const linea = document.getElementById(`linea${numeroLinea}`);
   linea.remove();
+
+  moverAlSiguienteCampo("Mover", "nuevaLinea");
 }
 
 function revisarArchivo() {
@@ -103,14 +113,17 @@ function revisarArchivo() {
       fecha = fechaAnterior;
     }
 
+    /*Comprovacion */
     if (horas.trim() !== "" && descripcion.trim() !== "") {
-      textoArchivo += `${fecha}\t${horas}\t${descripcion}\t${operarioActivo}\n`;
+      generarTextoArchivo(fecha, horas, descripcion);
     } else {
       lineasincompletas.push(lineasInputs[i].id.slice(5));
     }
+
     fechaAnterior = fecha;
   }
 
+  /*Burbuja de comprobacion */
   const tooltipText =
     lineasincompletas.length > 0
       ? `Líneas incompletas: ${lineasincompletas.join(", ")}`
@@ -118,6 +131,16 @@ function revisarArchivo() {
 
   const tooltip = document.getElementById("tooltip");
   tooltip.innerHTML = tooltipText;
+}
+
+function generarTextoArchivo(columna1, columna2, columna3) {
+  var operario = operarioActivo;
+
+  if (operarioActivo === noNombreOperario) {
+    operario = "";
+  }
+
+  textoArchivo += `${columna1}\t${columna2}\t${columna3}\t${operario}\n`;
 }
 
 function generarArchivo() {
@@ -128,9 +151,7 @@ function generarArchivo() {
 function descargarArchivo(texto) {
   const blob = new Blob([texto], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
-
   const a = document.createElement("a");
-
   const fechaHoy = obtenerFechaActual();
 
   a.href = url;
@@ -142,7 +163,9 @@ function descargarArchivo(texto) {
 
 function generarResumen() {}
 
-function abrirExistente() {}
+function abrirArchivo() {}
+
+function insertarElementos() {}
 
 /*Obtiene el nombre del operario de el archivo abierto*/
 function obtenerOperario() {}
@@ -150,3 +173,36 @@ function obtenerOperario() {}
 function visualizarResumen() {}
 
 function eliminarResumen() {}
+
+function compartir() {}
+
+function sumarHoras() {}
+
+function completarSiguienteFecha() {}
+
+/*Cuando ingreso el texto me tiene que ubicar sobre el boton siguiente para ingresar*/
+function seleccionarBoton() {}
+
+function alertaIncompletas() {}
+
+function guardarEnCache() {}
+
+function alertaActualizo() {}
+
+function compartirWhatsApp() {
+  const enlaceWpp = `https://api.whatsapp.com/send?text=${encodeUIRComponent(
+    textoArchivo
+  )}`;
+  windows.open(enlaceWpp, "_blank");
+}
+
+function moverAlSiguienteCampo(event, siguienteCampoId) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById(siguienteCampoId).focus();
+  }
+
+  if (event === "Mover") {
+    document.getElementById(siguienteCampoId).focus();
+  }
+}

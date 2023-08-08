@@ -8,14 +8,27 @@
   </head>
   <body>
     <div class="container">
+      <div>
+        <img src="logo.svg" />
+      </div>
       <div id="operarios" class="box">
-        <input type="text" id="operario" placeholder="Ingrese su nombre" />
+        <input
+          type="text"
+          id="operario"
+          name="name"
+          placeholder="Ingrese su nombre"
+          autocomplete="on"
+          required
+        />
         <button onclick="asignarNombre()">Ingresar</button>
+      <!--
+
       </div>
       <div id="archivo" class="box">
         <input type="file" id="archivoInput" />
         <button onclick="asignarNombre()">Abrir</button>
       </div>
+    -->
     </div>
     <script src="app.js"></script>
   </body>
