@@ -27,7 +27,9 @@ h2 {
 }
 
 /* Estilos para los campos de entrada */
-input[type="text"] {
+input[type="text"],
+input[type="number"],
+input[type="date"] {
   flex: 1;
   padding: 5px;
   border: 1px solid #ccc;
@@ -59,7 +61,8 @@ button:hover {
   background-color: #ff5050;
 }
 
-.minusButton, .plusButton{
+.minusButton,
+.plusButton {
   width: 27px;
 }
 

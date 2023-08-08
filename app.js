@@ -23,6 +23,7 @@ function asignarNombre() {
 function inicializarPagina2() {
   insertarNombre();
   moverAlSiguienteCampo("Mover", "fecha1");
+  insertarFecha("fecha1");
 }
 
 function insertarNombre() {
@@ -50,9 +51,9 @@ function crearNuevaLineaHTML(lineaActual) {
   return `
     <div id="linea${lineaActual}">
       <label for="fecha${lineaActual}">${lineaActual}. </label>
-      <input type="text" id="fecha${lineaActual}" placeholder="Fecha" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
-      <input type="text" id="horas${lineaActual}" placeholder="Horas" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
-      <input type="text" id="descripcion${lineaActual}" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')">
+      <input type="date" id="fecha${lineaActual}" placeholder="Fecha" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
+      <input type="number" id="horas${lineaActual}" placeholder="Horas" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
+      <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}') autocomplete="on">
       <button onclick="insertarLinea(${lineaActual})" id= plusButton${lineaActual} class="plusButton"> + </button>
       <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
     </div>
@@ -109,9 +110,7 @@ function revisarArchivo() {
     const horas = lineasInputs[i + 1].value;
     const descripcion = lineasInputs[i + 2].value;
 
-    if (fecha === "") {
-      fecha = fechaAnterior;
-    }
+    fecha = procesarFecha(fecha, fechaAnterior);
 
     /*Comprovacion */
     if (horas.trim() !== "" && descripcion.trim() !== "") {
@@ -205,4 +204,34 @@ function moverAlSiguienteCampo(event, siguienteCampoId) {
   if (event === "Mover") {
     document.getElementById(siguienteCampoId).focus();
   }
+}
+
+function procesarFecha(fechaActual = "", fechaAnterior = "") {
+  if (fechaActual === "") {
+    fechaActual = fechaAnterior;
+  }
+
+  const fechaFormateada = new Date(fechaActual).toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+  });
+  return fechaFormateada;
+}
+
+function insertarFecha(elemento, fechaActual = "") {
+  const campoFecha = document.getElementById(elemento);
+  console.log("Insertar fecha");
+
+  if (fechaActual === "") {
+    console.log("Nueva fecha");
+    fechaActual = new Date();
+  }
+
+  const dia = fechaActual.getDate().toString().padStart(2, "0");
+  const mes = (fechaActual.getMonth() + 1).toString().padStart(2, "0");
+  const anio = fechaActual.getFullYear();
+  fechaActual = `${anio}-${mes}-${dia}`;
+
+  const fechaInicial = fechaActual;
+  campoFecha.value = fechaInicial;
 }

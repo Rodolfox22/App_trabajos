@@ -12,12 +12,12 @@
     <div id="lineas">
       <div id="linea1">
         <label for="fecha1">1. </label>
-        <input type="text" id="fecha1" placeholder="Fecha" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas1')"/>
-        <input type="text" id="horas1" placeholder="Horas" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion1')"/>
+        <input type="date" id="fecha1" placeholder="Fecha" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas1')"/>
+        <input type="number" id="horas1" placeholder="Horas" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion1')"/>
         <input
           type="text"
-          id="descripcion1"
-          placeholder="Breve descripción del trabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton1')"
+          id="descripcion1" name="trabajos"
+          placeholder="Breve descripción del trabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton1')" autocomplete="on"
         />
         <button onclick="insertarLinea(1)" id="plusButton1" class="plusButton" >+</button>
         <button onclick="eliminarLinea(1)" class="minusButton">-</button>
