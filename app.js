@@ -1,5 +1,8 @@
 var contadorLineas = 2;
 let textoArchivo = "";
+let textoResumen = "";
+let horasPorFecha = {};
+
 var operarioActivo = "";
 let noNombreOperario = "Trabajos";
 
@@ -51,10 +54,10 @@ function crearNuevaLineaHTML(lineaActual) {
   return `
     <div id="linea${lineaActual}">
       <label for="fecha${lineaActual}">${lineaActual}. </label>
-      <input type="date" id="fecha${lineaActual}" placeholder="Fecha" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
-      <input type="number" id="horas${lineaActual}" placeholder="Horas" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
-      <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}') autocomplete="on">
-      <button onclick="insertarLinea(${lineaActual})" id= plusButton${lineaActual} class="plusButton"> + </button>
+      <input type="date" id="fecha${lineaActual}" placeholder="dd-mm" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
+      <input type="number" id="horas${lineaActual}" placeholder="Hs" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
+      <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')" autocomplete="on">
+      <button onclick="insertarLinea(${lineaActual})" id= 'plusButton${lineaActual}' class="plusButton"> + </button>
       <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
     </div>
   `;
@@ -96,12 +99,16 @@ function eliminarLinea(numeroLinea) {
   moverAlSiguienteCampo("Mover", "nuevaLinea");
 }
 
+//Todo: trabajar para abstraer funcion
 function revisarArchivo() {
-  console.log(operarioActivo);
+  console.log("Revisando archivo");
   const lineasDiv = document.getElementById("lineas");
   const lineasInputs = lineasDiv.getElementsByTagName("input");
 
   textoArchivo = "";
+  textoResumen = "";
+  horasPorFecha = {};
+
   let lineasincompletas = [];
   let fechaAnterior = "";
 
@@ -110,29 +117,45 @@ function revisarArchivo() {
     const horas = lineasInputs[i + 1].value;
     const descripcion = lineasInputs[i + 2].value;
 
-    fecha = procesarFecha(fecha, fechaAnterior);
+    const fechaFiltrada = procesarFecha(fecha, fechaAnterior);
 
     /*Comprovacion */
-    if (horas.trim() !== "" && descripcion.trim() !== "") {
-      generarTextoArchivo(fecha, horas, descripcion);
+    if (horas.trim() !== "" || descripcion.trim() !== "") {
+      generarTextoFilas(fechaFiltrada, horas, descripcion);
     } else {
       lineasincompletas.push(lineasInputs[i].id.slice(5));
     }
-
+    actualizarResumen(fechaFiltrada, horas);
     fechaAnterior = fecha;
   }
 
-  /*Burbuja de comprobacion */
-  const tooltipText =
+  /*Visualizar en consola el textoResumen*/
+  const horasPorFechaArray = Object.entries(horasPorFecha).map(
+    ([fecha, horas]) => `${fecha}: ${horas}`
+  );
+
+  textoResumen =
+    "<li>" + horasPorFechaArray.join(" hs.</li>\n<li>") + " hs.</li>";
+    
+    /*Burbuja de comprobacion */
+    const tooltipText =
     lineasincompletas.length > 0
-      ? `Líneas incompletas: ${lineasincompletas.join(", ")}`
-      : "Todas las líneas válidas";
+    ? `Líneas incompletas: ${lineasincompletas.join(", ")}`
+    : "Serán guardadas todas las líneas";
 
   const tooltip = document.getElementById("tooltip");
   tooltip.innerHTML = tooltipText;
+  
+  /*Visualizo resumen */
+  const spanResumen = document.getElementById("resumen");
+  textoResumen = "Resumen:\n" + textoResumen;
+  spanResumen.innerHTML = textoResumen;
+  
+  textoResumen = "\nResumen:\n" + horasPorFechaArray.join(" hs.\n") + "hs.";
+  console.log(textoResumen);
 }
 
-function generarTextoArchivo(columna1, columna2, columna3) {
+function generarTextoFilas(columna1, columna2, columna3) {
   var operario = operarioActivo;
 
   if (operarioActivo === noNombreOperario) {
@@ -142,8 +165,23 @@ function generarTextoArchivo(columna1, columna2, columna3) {
   textoArchivo += `${columna1}\t${columna2}\t${columna3}\t${operario}\n`;
 }
 
+function actualizarResumen(fechaResumen, horasResumen) {
+  let horasS = parseFloat(horasResumen);
+  if (isNaN(horasS) || horasS == 0) {
+    console.log("Horas en 0");
+    return;
+  }
+
+  if (horasPorFecha[fechaResumen]) {
+    horasPorFecha[fechaResumen] += horasS;
+  } else {
+    horasPorFecha[fechaResumen] = horasS;
+  }
+}
+
 function generarArchivo() {
   revisarArchivo();
+  generarResumen();
   descargarArchivo(textoArchivo);
 }
 
@@ -160,7 +198,9 @@ function descargarArchivo(texto) {
   URL.revokeObjectURL(url);
 }
 
-function generarResumen() {}
+function generarResumen() {
+  textoArchivo += "\n" + textoResumen;
+}
 
 function abrirArchivo() {}
 
@@ -235,3 +275,20 @@ function insertarFecha(elemento, fechaActual = "") {
   const fechaInicial = fechaActual;
   campoFecha.value = fechaInicial;
 }
+
+// Todo: resolver problemas de esta funcion para ajustar la altura del cuadro de entrada en función del contenido
+/*function ajustarAlturaInput(input) {
+  input.style.height = "auto";
+  input.style.height = input.scrollHeight + "px";
+  console.log(input.scrollHeight);
+}
+
+// Escucha el evento de entrada en los cuadros de entrada de texto
+document.addEventListener("input", function (event) {
+  if (
+    event.target.tagName.toLowerCase() === "input" &&
+    event.target.type === "text"
+  ) {
+    ajustarAlturaInput(event.target);
+  }
+});*/

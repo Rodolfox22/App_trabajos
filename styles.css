@@ -27,14 +27,28 @@ h2 {
 }
 
 /* Estilos para los campos de entrada */
-input[type="text"],
-input[type="number"],
-input[type="date"] {
+input {
   flex: 1;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 3px;
   min-height: 30px;
+}
+
+input[type="text"] {
+  height: fit-content;
+  overflow: visible;
+  overflow-y: scroll;
+}
+
+input[type="number"] {
+  min-width: 3em;
+  max-width: 3em;
+}
+
+input[type="date"] {
+  max-width: 6em;
+  min-width: 4em;
 }
 
 /* Estilos para los botones */
@@ -102,11 +116,6 @@ button:hover {
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
-}
-
-.labelCorto {
-  max-width: 50px;
-  min-width: 20px;
 }
 
 .empleados {
