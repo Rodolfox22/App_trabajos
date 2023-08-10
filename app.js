@@ -117,7 +117,14 @@ function revisarArchivo() {
     const horas = lineasInputs[i + 1].value;
     const descripcion = lineasInputs[i + 2].value;
 
-    const fechaFiltrada = procesarFecha(fecha, fechaAnterior);
+    if (fecha === "") {
+      fecha = fechaAnterior;
+    }
+
+    console.log("Fecha: " + fecha);
+
+    const fechaFiltrada = procesarFecha(fecha);
+    console.log("Fecha filtrada: " + fechaFiltrada + " " + i / 3);
 
     /*Comprovacion */
     if (horas.trim() !== "" || descripcion.trim() !== "") {
@@ -131,27 +138,26 @@ function revisarArchivo() {
 
   /*Visualizar en consola el textoResumen*/
   const horasPorFechaArray = Object.entries(horasPorFecha).map(
-    ([fecha, horas]) => `${fecha}: ${horas}`
+    ([fecha, horas]) => `${fecha}: ${horas} hs.`
   );
 
   textoResumen =
-    "<li>" + horasPorFechaArray.join(" hs.</li>\n<li>") + " hs.</li>";
-    
-    /*Burbuja de comprobacion */
-    const tooltipText =
+    "Resumen:\n<li>" + horasPorFechaArray.join("</li>\n<li>") + "</li>";
+
+  /*Burbuja de comprobacion */
+  const tooltipText =
     lineasincompletas.length > 0
-    ? `Líneas incompletas: ${lineasincompletas.join(", ")}`
-    : "Serán guardadas todas las líneas";
+      ? `Líneas incompletas: ${lineasincompletas.join(", ")}`
+      : "Serán guardadas todas las líneas";
 
   const tooltip = document.getElementById("tooltip");
   tooltip.innerHTML = tooltipText;
-  
+
   /*Visualizo resumen */
   const spanResumen = document.getElementById("resumen");
-  textoResumen = "Resumen:\n" + textoResumen;
   spanResumen.innerHTML = textoResumen;
-  
-  textoResumen = "\nResumen:\n" + horasPorFechaArray.join(" hs.\n") + "hs.";
+
+  textoResumen = "\nResumen:\n" + horasPorFechaArray.join("\n");
   console.log(textoResumen);
 }
 
@@ -246,15 +252,12 @@ function moverAlSiguienteCampo(event, siguienteCampoId) {
   }
 }
 
-function procesarFecha(fechaActual = "", fechaAnterior = "") {
-  if (fechaActual === "") {
-    fechaActual = fechaAnterior;
-  }
+function procesarFecha(fechaActual) {
+  //yyyy-mm-dd
+  const dia = fechaActual.slice(8);
+  const mes = fechaActual.slice(5, 7);
+  const fechaFormateada = dia + "-" + mes;
 
-  const fechaFormateada = new Date(fechaActual).toLocaleDateString("es-ES", {
-    day: "2-digit",
-    month: "2-digit",
-  });
   return fechaFormateada;
 }
 
