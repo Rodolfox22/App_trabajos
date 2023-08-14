@@ -2,6 +2,7 @@ var contadorLineas = 2;
 let textoArchivo = "";
 let textoResumen = "";
 let horasPorFecha = {};
+let horasPorFechaArray = [];
 
 var operarioActivo = "";
 let noNombreOperario = "Trabajos";
@@ -57,6 +58,7 @@ function crearNuevaLineaHTML(lineaActual) {
       <input type="date" id="fecha${lineaActual}" placeholder="dd-mm" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
       <input type="number" id="horas${lineaActual}" placeholder="Hs" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
       <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')" autocomplete="on">
+      <input type="checkbox" id="checkbox${lineaActual}" class="checkbox">
       <button onclick="insertarLinea(${lineaActual})" id= 'plusButton${lineaActual}' class="plusButton"> + </button>
       <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
     </div>
@@ -112,23 +114,25 @@ function revisarArchivo() {
   let lineasincompletas = [];
   let fechaAnterior = "";
 
-  for (let i = 0; i < lineasInputs.length; i += 3) {
+  for (let i = 0; i < lineasInputs.length; i += 4) {
     let fecha = lineasInputs[i].value.trim();
     const horas = lineasInputs[i + 1].value;
     const descripcion = lineasInputs[i + 2].value;
 
+    
+    /*const checkboxId = `checkbox${i / 3 + 1}`;
+
+    const checkbox = document.getElementById(checkboxId);*/
+    const isChecked = lineasInputs[i + 3].checked;
+
     if (fecha === "") {
       fecha = fechaAnterior;
     }
-
-    console.log("Fecha: " + fecha);
-
     const fechaFiltrada = procesarFecha(fecha);
-    console.log("Fecha filtrada: " + fechaFiltrada + " " + i / 3);
 
     /*Comprovacion */
     if (horas.trim() !== "" || descripcion.trim() !== "") {
-      generarTextoFilas(fechaFiltrada, horas, descripcion);
+      generarTextoFilas(fechaFiltrada, horas, descripcion, isChecked);
     } else {
       lineasincompletas.push(lineasInputs[i].id.slice(5));
     }
@@ -137,12 +141,9 @@ function revisarArchivo() {
   }
 
   /*Visualizar en consola el textoResumen*/
-  const horasPorFechaArray = Object.entries(horasPorFecha).map(
+  horasPorFechaArray = Object.entries(horasPorFecha).map(
     ([fecha, horas]) => `${fecha}: ${horas} hs.`
   );
-
-  textoResumen =
-    "Resumen:\n<li>" + horasPorFechaArray.join("</li>\n<li>") + "</li>";
 
   /*Burbuja de comprobacion */
   const tooltipText =
@@ -154,21 +155,25 @@ function revisarArchivo() {
   tooltip.innerHTML = tooltipText;
 
   /*Visualizo resumen */
-  const spanResumen = document.getElementById("resumen");
-  spanResumen.innerHTML = textoResumen;
+  verResumen();
 
-  textoResumen = "\nResumen:\n" + horasPorFechaArray.join("\n");
   console.log(textoResumen);
 }
 
-function generarTextoFilas(columna1, columna2, columna3) {
+function generarTextoFilas(columna1, columna2, columna3, terminado) {
   var operario = operarioActivo;
+  var completo = "";
 
   if (operarioActivo === noNombreOperario) {
     operario = "";
   }
 
-  textoArchivo += `${columna1}\t${columna2}\t${columna3}\t${operario}\n`;
+  if (terminado) {
+    completo = " Completo.";
+    console.log("Trabajo completo")
+  }
+
+  textoArchivo += `${columna1}\t${columna2}\t${columna3}.${completo}\t${operario}\n`;
 }
 
 function actualizarResumen(fechaResumen, horasResumen) {
@@ -187,7 +192,7 @@ function actualizarResumen(fechaResumen, horasResumen) {
 
 function generarArchivo() {
   revisarArchivo();
-  generarResumen();
+  verResumen("imprimir");
   descargarArchivo(textoArchivo);
 }
 
@@ -204,7 +209,17 @@ function descargarArchivo(texto) {
   URL.revokeObjectURL(url);
 }
 
-function generarResumen() {
+function verResumen(ver = "") {
+  if (ver === "") {
+    textoResumen =
+      "Resumen:\n<li>" + horasPorFechaArray.join("</li>\n<li>") + "</li>";
+    const spanResumen = document.getElementById("resumen");
+    spanResumen.innerHTML = textoResumen;
+
+    textoResumen = "\nResumen:\n" + horasPorFechaArray.join("\n");
+    return;
+  }
+
   textoArchivo += "\n" + textoResumen;
 }
 
