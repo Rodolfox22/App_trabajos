@@ -12,7 +12,6 @@ const itemTextoAbierto = "textoAbierto";
 const itemNombreOperario = "nombreOperario";
 
 //Todo: Insertar logo en la portada, insertar logo en el icono
-//Todo: insertar texto de ingreso de nombre en la pantalla de horas si no esta ingresado o prevenir que se ingrese a la nueva pagina sin nombre por medio de un alert
 
 function ingresarConNombre() {
   localStorage.setItem(itemTextoAbierto, "");
@@ -25,6 +24,16 @@ function ingresarConNombre() {
   alertaNombre(nombreOperario);
 }
 
+function ingresarConArchivo() {
+  let nombreOperario = localStorage
+    .getItem(itemTextoAbierto)
+    .split("\n")[1]
+    .split("\t")[3];
+  console.log(`Nombre: ${nombreOperario}`);
+
+  alertaNombre(nombreOperario);
+}
+
 function alertaNombre(nombreOperario) {
   if (nombreOperario !== "" && nombreOperario !== "undefined") {
     irAIngresoHoras(nombreOperario);
@@ -34,23 +43,13 @@ function alertaNombre(nombreOperario) {
   const textoIngresado = window.prompt("Ingresar nombre:");
 
   if (textoIngresado !== null) {
-    console.log("Nombre:", textoIngresado);
+    console.log(`Nombre: ${textoIngresado}`);
     irAIngresoHoras(textoIngresado.trim());
     return;
   }
 
   console.log("El usuario canceló el ingreso.");
   return "";
-}
-
-function ingresarConArchivo() {
-  let nombreOperario = localStorage
-    .getItem(itemTextoAbierto)
-    .split("\n")[1]
-    .split("\t")[3];
-  console.log(`Nombre: ${nombreOperario}`);
-
-  alertaNombre(nombreOperario);
 }
 
 function irAIngresoHoras(nombre) {
@@ -156,10 +155,6 @@ function revisarArchivo() {
     let fecha = lineasInputs[i].value.trim();
     const horas = lineasInputs[i + 1].value;
     const descripcion = lineasInputs[i + 2].value;
-
-    /*const checkboxId = `checkbox${i / 3 + 1}`;
-
-    const checkbox = document.getElementById(checkboxId);*/
     const isChecked = lineasInputs[i + 3].checked;
 
     if (fecha === "") {
@@ -195,6 +190,7 @@ function revisarArchivo() {
   verResumen();
 
   console.log(textoResumen);
+  localStorage.setItem(itemTextoAbierto, textoArchivo);
 }
 
 function generarTextoFilas(columna1, columna2, columna3, terminado) {
@@ -210,7 +206,7 @@ function generarTextoFilas(columna1, columna2, columna3, terminado) {
     console.log("Trabajo completo");
   }
 
-  textoArchivo += `${columna1}\t${columna2}\t${columna3}.${completo}\t${operario}\n`;
+  textoArchivo += `${columna1}\t${columna2}\t${columna3}${completo}\t${operario}\n`;
 }
 
 function actualizarResumen(fechaResumen, horasResumen) {
