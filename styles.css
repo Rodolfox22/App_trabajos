@@ -96,7 +96,7 @@ button:hover {
 
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 16em;
+  width: 10em;
   background-color: #007bff;
   color: #fff;
   text-align: center;
@@ -106,7 +106,7 @@ button:hover {
   z-index: 1;
   bottom: 100%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-70%);
   opacity: 0;
   transition: opacity 0.7s;
 }
@@ -115,7 +115,7 @@ button:hover {
   content: "";
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: 70%;
   margin-left: -0.5em;
   border-width: 0.5em;
   border-style: solid;
@@ -156,12 +156,11 @@ button:hover {
 
 }
 .botonMenu {
-  display: inline-block;
-  padding: 1em 2em;
+  padding: 1em 1em;
   margin: 1em;
   background-color: #3498db;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: .4em;
   cursor: pointer;
 }

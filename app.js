@@ -8,34 +8,49 @@ let operarioActivo = "";
 let noNombreOperario = "Trabajos";
 
 let textoAbierto = "";
-let textoAnterior = "";
 const itemTextoAbierto = "textoAbierto";
 const itemNombreOperario = "nombreOperario";
 
 //Todo: Insertar logo en la portada, insertar logo en el icono
+//Todo: insertar texto de ingreso de nombre en la pantalla de horas si no esta ingresado o prevenir que se ingrese a la nueva pagina sin nombre por medio de un alert
 
 function ingresarConNombre() {
+  localStorage.setItem(itemTextoAbierto, "");
   let nombreOperario = "";
 
   const operarioInput = document.getElementById("operario");
 
   nombreOperario = operarioInput.value.trim();
   console.log(nombreOperario);
+  alertaNombre(nombreOperario);
+}
 
-  if (nombreOperario == "") {
-    nombreOperario = noNombreOperario;
+function alertaNombre(nombreOperario) {
+  if (nombreOperario !== "" && nombreOperario !== "undefined") {
+    irAIngresoHoras(nombreOperario);
+    return;
   }
 
-  irAIngresoHoras(nombreOperario);
+  const textoIngresado = window.prompt("Ingresar nombre:");
+
+  if (textoIngresado !== null) {
+    console.log("Nombre:", textoIngresado);
+    irAIngresoHoras(textoIngresado.trim());
+    return;
+  }
+
+  console.log("El usuario canceló el ingreso.");
+  return "";
 }
 
 function ingresarConArchivo() {
-  const nombreOperario = localStorage
+  let nombreOperario = localStorage
     .getItem(itemTextoAbierto)
     .split("\n")[1]
     .split("\t")[3];
-  console.log(nombreOperario);
-  irAIngresoHoras(nombreOperario);
+  console.log(`Nombre: ${nombreOperario}`);
+
+  alertaNombre(nombreOperario);
 }
 
 function irAIngresoHoras(nombre) {
@@ -50,9 +65,8 @@ function inicializarPagina2() {
   insertarFecha("fecha1");
   textoAbierto = localStorage.getItem(itemTextoAbierto);
 
-  if (textoAbierto !== "" && textoAbierto !== textoAnterior) {
-    console.log("Insertar textos");
-    textoAnterior = textoAbierto;
+  if (textoAbierto !== "") {
+    console.log("Completando campos");
     insertarElementos();
     return;
   }
@@ -202,7 +216,7 @@ function generarTextoFilas(columna1, columna2, columna3, terminado) {
 function actualizarResumen(fechaResumen, horasResumen) {
   let horasS = parseFloat(horasResumen);
   if (isNaN(horasS) || horasS == 0) {
-    console.log("Horas en 0");
+    console.log("Campo de horas en 0");
     return;
   }
 
@@ -223,7 +237,7 @@ function descargarArchivo(texto) {
   const blob = new Blob([texto], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  const fechaHoy = obtenerFechaActual("es-ES");
+  const fechaHoy = obtenerFechaActual();
 
   a.href = url;
   a.download = `${operarioActivo}_${fechaHoy}.txt`;
@@ -234,11 +248,13 @@ function descargarArchivo(texto) {
 
 function verResumen(ver = "") {
   if (ver === "") {
+    /*Primero genero el resumen para visualizar en la app */
     textoResumen =
       "Resumen:\n<li>" + horasPorFechaArray.join("</li>\n<li>") + "</li>";
     const spanResumen = document.getElementById("resumen");
     spanResumen.innerHTML = textoResumen;
 
+    /*Por ultimo genero nuevamente el texto para agregar al archivo guardado */
     textoResumen = "\nResumen:\n" + horasPorFechaArray.join("\n");
     return;
   }
@@ -257,8 +273,6 @@ function adquirirTextoArchivo() {
     reader.onload = function (event) {
       var fileContent = event.target.result;
       localStorage.setItem(itemTextoAbierto, fileContent);
-      /*console.log("Archivo cargado:");
-      console.log(fileContent);*/
     };
 
     reader.readAsText(file);
@@ -275,11 +289,8 @@ function insertarElementos() {
     const descripcion = elemento[2];
 
     insertarFecha(`fecha${contadorLineas - 1}`, fecha);
-    console.log("Fecha insertada")
     insertarTexto(`horas${contadorLineas - 1}`, horas);
-    console.log("Hora insertada")
     insertarTexto(`descripcion${contadorLineas - 1}`, descripcion);
-    console.log("Descripcion insertada")
 
     agregarLinea();
   }
@@ -296,7 +307,29 @@ function insertarTexto(elemento, texto) {
   campoInput.value = texto;
 }
 
-function compartir() {}
+function compartir() {
+  // Crea un Blob con el contenido
+  const blob = new Blob([textoArchivo], { type: "text/plain" });
+
+  // Crea un objeto File a partir del Blob
+  const archivo = new File([blob], "archivo.txt", { type: "text/plain" });
+
+  // Verifica si el navegador soporta la API de Web Share
+  if (navigator.share) {
+    navigator
+      .share({
+        files: [archivo],
+      })
+      .then(() => {
+        console.log("Archivo compartido exitosamente.");
+      })
+      .catch((error) => {
+        console.error("Error al compartir el archivo:", error);
+      });
+  } else {
+    console.log("La API de Web Share no está soportada en este navegador.");
+  }
+}
 
 function guardarEnCache() {}
 
@@ -348,16 +381,17 @@ function insertarFecha(elemento, fechaActual = "") {
   campoFecha.value = fechaActual;
 }
 
-function obtenerFechaActual(idioma) {
+function obtenerFechaActual(idioma = "es-ES") {
   const fecha = new Date();
   const dia = fecha.getDate().toString().padStart(2, "0");
   const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
   const anio = fecha.getFullYear();
+
   if (idioma == "es-ES") {
     return `${dia}-${mes}-${anio}`;
   }
+
   if (idioma == "en-EN") {
-    console.log(`${anio}-${mes}-${dia}`)
     return `${anio}-${mes}-${dia}`;
   }
 }
