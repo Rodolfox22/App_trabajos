@@ -20,14 +20,17 @@
           autocomplete="on"
           required
         />
-        <button onclick="asignarNombre()">Ingresar</button>
+        <button onclick="ingresarConNombre()">Ingresar</button>
       </div>
       <div id="archivo" class="box">
-        <label for="file">Seccion en construccion</label>
+        <label for="file">Abrir archivo existente</label>
         <input type="file" id="archivoInput" />
-        <button onclick="asignarNombre()">Abrir</button>
+        <button onclick="ingresarConArchivo()">Abrir</button>
       </div>
     </div>
     <script src="app.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", adquirirTextoArchivo);
+    </script>
   </body>
 </html>

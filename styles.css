@@ -151,10 +151,14 @@ button:hover {
   max-width: 50em;
 }
 
+.botonesContainer{
+  display: flex;
+
+}
 .botonMenu {
   display: inline-block;
   padding: 1em 2em;
-  margin: 2em;
+  margin: 1em;
   background-color: #3498db;
   color: #fff;
   border: none;

@@ -1,25 +1,45 @@
-var contadorLineas = 2;
+let contadorLineas = 2;
 let textoArchivo = "";
 let textoResumen = "";
 let horasPorFecha = {};
 let horasPorFechaArray = [];
 
-var operarioActivo = "";
+let operarioActivo = "";
 let noNombreOperario = "Trabajos";
 
-/*Todo: Insertar logo en la portada, insertar logo en el icono */
-function asignarNombre() {
+let textoAbierto = "";
+let textoAnterior = "";
+const itemTextoAbierto = "textoAbierto";
+const itemNombreOperario = "nombreOperario";
+
+//Todo: Insertar logo en la portada, insertar logo en el icono
+
+function ingresarConNombre() {
   let nombreOperario = "";
 
   const operarioInput = document.getElementById("operario");
 
   nombreOperario = operarioInput.value.trim();
   console.log(nombreOperario);
+
   if (nombreOperario == "") {
     nombreOperario = noNombreOperario;
   }
 
-  localStorage.setItem("nombreOperario", nombreOperario);
+  irAIngresoHoras(nombreOperario);
+}
+
+function ingresarConArchivo() {
+  const nombreOperario = localStorage
+    .getItem(itemTextoAbierto)
+    .split("\n")[1]
+    .split("\t")[3];
+  console.log(nombreOperario);
+  irAIngresoHoras(nombreOperario);
+}
+
+function irAIngresoHoras(nombre) {
+  localStorage.setItem(itemNombreOperario, nombre);
 
   window.location.href = "horas.html";
 }
@@ -28,10 +48,22 @@ function inicializarPagina2() {
   insertarNombre();
   moverAlSiguienteCampo("Mover", "fecha1");
   insertarFecha("fecha1");
+  textoAbierto = localStorage.getItem(itemTextoAbierto);
+
+  if (textoAbierto !== "" && textoAbierto !== textoAnterior) {
+    console.log("Insertar textos");
+    textoAnterior = textoAbierto;
+    insertarElementos();
+    return;
+  }
 }
 
 function insertarNombre() {
-  var nombreOperario = localStorage.getItem("nombreOperario");
+  let nombreOperario = localStorage.getItem(itemNombreOperario);
+
+  if (nombreOperario === "undefined") {
+    nombreOperario = noNombreOperario;
+  }
 
   const lineaNombre = document.getElementById("nombre");
 
@@ -40,15 +72,8 @@ function insertarNombre() {
   if (nombreOperario !== noNombreOperario) {
     lineaNombre.insertAdjacentHTML("beforeend", insertarLineaNombre);
   }
-  operarioActivo = nombreOperario;
-}
 
-function obtenerFechaActual() {
-  const fecha = new Date();
-  const dia = fecha.getDate().toString().padStart(2, "0");
-  const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-  const anio = fecha.getFullYear();
-  return `${dia}-${mes}-${anio}`;
+  operarioActivo = nombreOperario;
 }
 
 function crearNuevaLineaHTML(lineaActual) {
@@ -101,7 +126,6 @@ function eliminarLinea(numeroLinea) {
   moverAlSiguienteCampo("Mover", "nuevaLinea");
 }
 
-//Todo: trabajar para abstraer funcion
 function revisarArchivo() {
   console.log("Revisando archivo");
   const lineasDiv = document.getElementById("lineas");
@@ -119,7 +143,6 @@ function revisarArchivo() {
     const horas = lineasInputs[i + 1].value;
     const descripcion = lineasInputs[i + 2].value;
 
-    
     /*const checkboxId = `checkbox${i / 3 + 1}`;
 
     const checkbox = document.getElementById(checkboxId);*/
@@ -161,8 +184,8 @@ function revisarArchivo() {
 }
 
 function generarTextoFilas(columna1, columna2, columna3, terminado) {
-  var operario = operarioActivo;
-  var completo = "";
+  let operario = operarioActivo;
+  let completo = "";
 
   if (operarioActivo === noNombreOperario) {
     operario = "";
@@ -170,7 +193,7 @@ function generarTextoFilas(columna1, columna2, columna3, terminado) {
 
   if (terminado) {
     completo = " Completo.";
-    console.log("Trabajo completo")
+    console.log("Trabajo completo");
   }
 
   textoArchivo += `${columna1}\t${columna2}\t${columna3}.${completo}\t${operario}\n`;
@@ -200,7 +223,7 @@ function descargarArchivo(texto) {
   const blob = new Blob([texto], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  const fechaHoy = obtenerFechaActual();
+  const fechaHoy = obtenerFechaActual("es-ES");
 
   a.href = url;
   a.download = `${operarioActivo}_${fechaHoy}.txt`;
@@ -223,27 +246,57 @@ function verResumen(ver = "") {
   textoArchivo += "\n" + textoResumen;
 }
 
-function abrirArchivo() {}
+function adquirirTextoArchivo() {
+  const fileInput = document.getElementById("archivoInput");
+  //console.log("Abriendo archivos");
 
-function insertarElementos() {}
+  fileInput.addEventListener("change", function (event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
 
-/*Obtiene el nombre del operario de el archivo abierto*/
-function obtenerOperario() {}
+    reader.onload = function (event) {
+      var fileContent = event.target.result;
+      localStorage.setItem(itemTextoAbierto, fileContent);
+      /*console.log("Archivo cargado:");
+      console.log(fileContent);*/
+    };
 
-function visualizarResumen() {}
+    reader.readAsText(file);
+  });
+}
 
-function eliminarResumen() {}
+function insertarElementos() {
+  const seccion = textoAbierto.split("\n\n");
+  const linea = seccion[0].split("\n");
+  for (let index = 0; index < linea.length; index++) {
+    const elemento = linea[index].split("\t");
+    let fecha = elemento[0];
+    const horas = elemento[1];
+    const descripcion = elemento[2];
+
+    insertarFecha(`fecha${contadorLineas - 1}`, fecha);
+    console.log("Fecha insertada")
+    insertarTexto(`horas${contadorLineas - 1}`, horas);
+    console.log("Hora insertada")
+    insertarTexto(`descripcion${contadorLineas - 1}`, descripcion);
+    console.log("Descripcion insertada")
+
+    agregarLinea();
+  }
+}
+
+function insertarTexto(elemento, texto) {
+  const campoInput = document.getElementById(elemento);
+  if (texto.endsWith(" Completo.")) {
+    const checkbox = document.getElementById(`checkbox${contadorLineas - 1}`);
+    checkbox.checked = true;
+    const indiceCompleto = texto.indexOf(" Completo.");
+    texto = texto.slice(0, indiceCompleto).trim();
+  }
+  campoInput.value = texto;
+}
 
 function compartir() {}
-
-function sumarHoras() {}
-
-function completarSiguienteFecha() {}
-
-/*Cuando ingreso el texto me tiene que ubicar sobre el boton siguiente para ingresar*/
-function seleccionarBoton() {}
-
-function alertaIncompletas() {}
 
 function guardarEnCache() {}
 
@@ -278,23 +331,38 @@ function procesarFecha(fechaActual) {
 
 function insertarFecha(elemento, fechaActual = "") {
   const campoFecha = document.getElementById(elemento);
-  console.log("Insertar fecha");
+  //console.log("Insertar fecha");
 
   if (fechaActual === "") {
-    console.log("Nueva fecha");
-    fechaActual = new Date();
+    //console.log("Nueva fecha");
+    fechaActual = obtenerFechaActual("en-EN");
+  } else {
+    const anioNuevo = new Date();
+    //dd-mm
+    const dia = fechaActual.slice(0, 2);
+    const mes = fechaActual.slice(3);
+    const anio = anioNuevo.getFullYear();
+    fechaActual = `${anio}-${mes}-${dia}`;
   }
 
-  const dia = fechaActual.getDate().toString().padStart(2, "0");
-  const mes = (fechaActual.getMonth() + 1).toString().padStart(2, "0");
-  const anio = fechaActual.getFullYear();
-  fechaActual = `${anio}-${mes}-${dia}`;
-
-  const fechaInicial = fechaActual;
-  campoFecha.value = fechaInicial;
+  campoFecha.value = fechaActual;
 }
 
-// Todo: resolver problemas de esta funcion para ajustar la altura del cuadro de entrada en función del contenido
+function obtenerFechaActual(idioma) {
+  const fecha = new Date();
+  const dia = fecha.getDate().toString().padStart(2, "0");
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+  const anio = fecha.getFullYear();
+  if (idioma == "es-ES") {
+    return `${dia}-${mes}-${anio}`;
+  }
+  if (idioma == "en-EN") {
+    console.log(`${anio}-${mes}-${dia}`)
+    return `${anio}-${mes}-${dia}`;
+  }
+}
+
+// Todo: resolver problemas de esta funcion para ajustar la altura del cuadro de entrada en función del contenido o agregar un tooltip para que se visualice cuando hago clik en el campo
 /*function ajustarAlturaInput(input) {
   input.style.height = "auto";
   input.style.height = input.scrollHeight + "px";
