@@ -34,7 +34,7 @@
           onkeydown="moverAlSiguienteCampo(event, 'plusButton1')"
           autocomplete="on"
         />
-        <input type="checkbox" id="checkbox1" class="checkbox">
+        <input type="checkbox" id="checkbox1" class="checkbox" />
         <button onclick="insertarLinea(1)" id="plusButton1" class="plusButton">
           +
         </button>
@@ -42,17 +42,19 @@
       </div>
       <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
     </div>
-    <div class="botonesContainer">
-      <div>
-        <button onclick="agregarLinea()" id="nuevaLinea" class="botonMenu">
-          Nuevo
-        </button>
-      </div>
-      <div>
-        <button onclick="generarArchivo()" class="botonMenu">Guardar</button>
-      </div>
-      <div>
-        <button onclick="compartir()" class="botonMenu">Compartir</button>
+    <div class="cajaBotones">
+      <div class="botonesContainer">
+        <div>
+          <button onclick="agregarLinea()" id="nuevaLinea" class="botonMenu">
+            Nuevo
+          </button>
+        </div>
+        <div>
+          <button onclick="generarArchivo()" class="botonMenu">Guardar</button>
+        </div>
+        <div>
+          <button onclick="compartir()" class="botonMenu">Compartir</button>
+        </div>
       </div>
       <div class="tooltip">
         <button
@@ -62,18 +64,13 @@
         >
           Revisar
         </button>
-        <!--<button
-          onclick="compartirWhatsApp()"
-          onmouseover="revisarArchivo()"
-          class="botonMenu"
-          >
-          Wpp
-        </button>-->
         <span class="tooltiptext" id="tooltip">Todas las líneas válidas</span>
       </div>
     </div>
-    <div >
-      <ul id="resumen">Resumen:</ul>
+    <div>
+      <ul id="resumen">
+        Resumen:
+      </ul>
     </div>
     <script src="app.js"></script>
     <script>
