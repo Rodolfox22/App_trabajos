@@ -12,6 +12,19 @@ const itemTextoAbierto = "textoAbierto";
 const itemNombreOperario = "nombreOperario";
 
 //Todo: Insertar logo en la portada, insertar logo en el icono
+function crearNuevaLineaHTML(lineaActual) {
+  return `
+    <div id="linea${lineaActual}">
+      <label for="fecha${lineaActual}">${lineaActual}. </label>
+      <input type="date" id="fecha${lineaActual}" placeholder="dd-mm" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
+      <input type="number" id="horas${lineaActual}" placeholder="Hs" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
+      <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')" autocomplete="on">
+      <input type="checkbox" id="checkbox${lineaActual}" class="checkbox">
+      <button onclick="insertarLinea(${lineaActual})" id= 'plusButton${lineaActual}' class="plusButton"> + </button>
+      <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
+    </div>
+  `;
+}
 
 function ingresarConNombre() {
   localStorage.setItem(itemTextoAbierto, "");
@@ -87,20 +100,6 @@ function insertarNombre() {
   }
 
   operarioActivo = nombreOperario;
-}
-
-function crearNuevaLineaHTML(lineaActual) {
-  return `
-    <div id="linea${lineaActual}">
-      <label for="fecha${lineaActual}">${lineaActual}. </label>
-      <input type="date" id="fecha${lineaActual}" placeholder="dd-mm" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
-      <input type="number" id="horas${lineaActual}" placeholder="Hs" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
-      <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')" autocomplete="on">
-      <input type="checkbox" id="checkbox${lineaActual}" class="checkbox">
-      <button onclick="insertarLinea(${lineaActual})" id= 'plusButton${lineaActual}' class="plusButton"> + </button>
-      <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
-    </div>
-  `;
 }
 
 function agregarLinea() {
@@ -226,17 +225,17 @@ function actualizarResumen(fechaResumen, horasResumen) {
 function generarArchivo() {
   revisarArchivo();
   verResumen("imprimir");
-  descargarArchivo(textoArchivo);
+  descargarArchivo();
 }
 
-function descargarArchivo(texto) {
-  const blob = new Blob([texto], { type: "text/plain" });
+function descargarArchivo() {
+  const blob = new Blob([textoArchivo], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const fechaHoy = obtenerFechaActual();
 
   a.href = url;
-  a.download = `${operarioActivo}_${fechaHoy}.txt`;
+  a.download = `${operarioActivo} ${fechaHoy}.txt`;
   a.click();
 
   URL.revokeObjectURL(url);
@@ -303,12 +302,19 @@ function insertarTexto(elemento, texto) {
   campoInput.value = texto;
 }
 
+//Todo: poner en funcionamiento
 function compartir() {
+  revisarArchivo();
+  verResumen("imprimir");
+
   // Crea un Blob con el contenido
   const blob = new Blob([textoArchivo], { type: "text/plain" });
+  const fechaHoy = obtenerFechaActual();
 
   // Crea un objeto File a partir del Blob
-  const archivo = new File([blob], "archivo.txt", { type: "text/plain" });
+  const archivo = new File([blob], `${operarioActivo} ${fechaHoy}.txt`, {
+    type: "text/plain",
+  });
 
   // Verifica si el navegador soporta la API de Web Share
   if (navigator.share) {
@@ -320,17 +326,14 @@ function compartir() {
         console.log("Archivo compartido exitosamente.");
       })
       .catch((error) => {
-        console.error("Error al compartir el archivo:", error);
+        console.error("Error al compartir el archivo: ", error);
       });
   } else {
     console.log("La API de Web Share no está soportada en este navegador.");
   }
 }
 
-function guardarEnCache() {}
-
-function alertaActualizo() {}
-
+//Todo: revisar y evaluar su uso
 function compartirWhatsApp() {
   const enlaceWpp = `https://api.whatsapp.com/send?text=${encodeUIRComponent(
     textoArchivo
@@ -391,20 +394,3 @@ function obtenerFechaActual(idioma = "es-ES") {
     return `${anio}-${mes}-${dia}`;
   }
 }
-
-// Todo: resolver problemas de esta funcion para ajustar la altura del cuadro de entrada en función del contenido o agregar un tooltip para que se visualice cuando hago clik en el campo
-/*function ajustarAlturaInput(input) {
-  input.style.height = "auto";
-  input.style.height = input.scrollHeight + "px";
-  console.log(input.scrollHeight);
-}
-
-// Escucha el evento de entrada en los cuadros de entrada de texto
-document.addEventListener("input", function (event) {
-  if (
-    event.target.tagName.toLowerCase() === "input" &&
-    event.target.type === "text"
-  ) {
-    ajustarAlturaInput(event.target);
-  }
-});*/
