@@ -19,7 +19,7 @@ function crearNuevaLineaHTML(lineaActual) {
       <input type="date" id="fecha${lineaActual}" placeholder="dd-mm" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
       <input type="number" id="horas${lineaActual}" placeholder="Hs" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
       <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')" autocomplete="on">
-      <input type="checkbox" id="checkbox${lineaActual}" class="checkbox">
+      <input type="checkbox" id="checkbox${lineaActual}" class="checkbox" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')">
       <button onclick="insertarLinea(${lineaActual})" id= 'plusButton${lineaActual}' class="plusButton"> + </button>
       <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
     </div>
@@ -112,6 +112,7 @@ function agregarLinea() {
 
   const nuevoCampoId = `fecha${contadorLineas}`;
   moverAlSiguienteCampo("Mover", nuevoCampoId);
+  imprimirInfo(`La linea ${contadorLineas} fue agregada`);
 
   contadorLineas++;
 }
@@ -127,6 +128,7 @@ function insertarLinea(numeroLinea) {
 
   const nuevoCampoId = `fecha${contadorLineas}`;
   moverAlSiguienteCampo("Mover", nuevoCampoId);
+  imprimirInfo(`La linea ${contadorLineas} fue insertada`);
 
   contadorLineas++;
 }
@@ -136,6 +138,7 @@ function eliminarLinea(numeroLinea) {
   linea.remove();
 
   moverAlSiguienteCampo("Mover", "nuevaLinea");
+  imprimirInfo(`La linea ${numeroLinea} fue eliminada`);
 }
 
 function revisarArchivo() {
@@ -179,7 +182,7 @@ function revisarArchivo() {
   /*Burbuja de comprobacion */
   const tooltipText =
     lineasincompletas.length > 0
-      ? `Líneas incompletas: ${lineasincompletas.join(", ")}`
+      ? `Completar líneas: ${lineasincompletas.join(", ")}`
       : "Serán guardadas todas las líneas";
 
   const tooltip = document.getElementById("tooltip");
@@ -239,6 +242,7 @@ function descargarArchivo() {
   a.click();
 
   URL.revokeObjectURL(url);
+  imprimirInfo("Archivo guardado en memoria");
 }
 
 function verResumen(ver = "") {
@@ -259,11 +263,18 @@ function verResumen(ver = "") {
 
 function adquirirTextoArchivo() {
   const fileInput = document.getElementById("archivoInput");
-  //console.log("Abriendo archivos");
 
   fileInput.addEventListener("change", function (event) {
     var file = event.target.files[0];
     var reader = new FileReader();
+    let nombreArchivo = "";
+
+    if (file) {
+      nombreArchivo = file.name;
+      nombreArchivo = "Archivo abierto: " + nombreArchivo;
+    } else {
+      nombreArchivo = "Continua edición actual";
+    }
 
     reader.onload = function (event) {
       var fileContent = event.target.result;
@@ -272,6 +283,7 @@ function adquirirTextoArchivo() {
 
     reader.readAsText(file);
   });
+  imprimirInfo(nombreArchivo);
 }
 
 function insertarElementos() {
@@ -302,7 +314,6 @@ function insertarTexto(elemento, texto) {
   campoInput.value = texto;
 }
 
-//Todo: poner en funcionamiento
 function compartir() {
   revisarArchivo();
   verResumen("imprimir");
@@ -327,18 +338,16 @@ function compartir() {
       })
       .catch((error) => {
         console.error("Error al compartir el archivo: ", error);
+        imprimirInfo(`Error al compartir el archivo: ${error}`);
+        return;
       });
   } else {
     console.log("La API de Web Share no está soportada en este navegador.");
+    return;
   }
-}
-
-//Todo: revisar y evaluar su uso
-function compartirWhatsApp() {
-  const enlaceWpp = `https://api.whatsapp.com/send?text=${encodeUIRComponent(
-    textoArchivo
-  )}`;
-  windows.open(enlaceWpp, "_blank");
+  imprimirInfo("Archivo compartido exitosamente.");
+  localStorage.setItem(itemTextoAbierto, "");
+  location.reload();
 }
 
 function moverAlSiguienteCampo(event, siguienteCampoId) {
@@ -393,4 +402,9 @@ function obtenerFechaActual(idioma = "es-ES") {
   if (idioma == "en-EN") {
     return `${anio}-${mes}-${dia}`;
   }
+}
+
+function imprimirInfo(texto) {
+  const spanInfo = document.getElementById("info");
+  spanInfo.innerHTML = texto;
 }

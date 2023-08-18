@@ -40,7 +40,6 @@ input {
 input[type="text"] {
   height: fit-content;
   overflow: visible;
-  overflow-y: scroll;
 }
 
 input[type="number"] {
@@ -92,7 +91,6 @@ button:hover {
 .tooltip {
   position: relative;
 }
-
 
 .tooltip .tooltiptext {
   visibility: hidden;

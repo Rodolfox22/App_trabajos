@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aplicación de Registro de Trabajos JLC</title>
+    <title>Registro de Trabajos JLC</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -16,14 +16,12 @@
           type="date"
           id="fecha1"
           placeholder="dd-mm"
-          class="labelCorto"
           onkeydown="moverAlSiguienteCampo(event, 'horas1')"
         />
         <input
           type="number"
           id="horas1"
           placeholder="Hs"
-          class="labelCorto"
           onkeydown="moverAlSiguienteCampo(event, 'descripcion1')"
         />
         <input
@@ -34,7 +32,12 @@
           onkeydown="moverAlSiguienteCampo(event, 'plusButton1')"
           autocomplete="on"
         />
-        <input type="checkbox" id="checkbox1" class="checkbox" />
+        <input
+          type="checkbox"
+          id="checkbox1"
+          class="checkbox"
+          onkeydown="moverAlSiguienteCampo(event, 'plusButton1')"
+        />
         <button onclick="insertarLinea(1)" id="plusButton1" class="plusButton">
           +
         </button>
@@ -42,6 +45,8 @@
       </div>
       <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
     </div>
+    <div class="tooltip"></div>
+    <span id="info" class="cajaBotones"></span>
     <div class="cajaBotones">
       <div class="botonesContainer">
         <div>
@@ -66,11 +71,11 @@
         </button>
         <span class="tooltiptext" id="tooltip">Todas las líneas válidas</span>
       </div>
-    </div>
-    <div>
-      <ul id="resumen">
-        Resumen:
-      </ul>
+      <div>
+        <ul id="resumen">
+          Para visualizar el resumen presione revisar
+        </ul>
+      </div>
     </div>
     <script src="app.js"></script>
     <script>
