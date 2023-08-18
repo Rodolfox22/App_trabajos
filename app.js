@@ -347,7 +347,6 @@ function compartir() {
   }
   imprimirInfo("Archivo compartido exitosamente.");
   localStorage.setItem(itemTextoAbierto, "");
-  location.reload();
 }
 
 function moverAlSiguienteCampo(event, siguienteCampoId) {
