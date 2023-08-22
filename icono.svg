@@ -1,0 +1,18 @@
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo del logo  -->
+  <rect width="100%" height="100%"  fill="rgba(0, 0, 255, 0.0)"/>
+
+  <!-- Letras "JLC" en color Rojo -->
+  <text
+    x="53%"
+    y="50%"
+    font-size="16"
+    font-family="Arial, sans-serif"
+    font-weight="bold" 
+    fill="#ff0000"
+    text-anchor="middle"
+    dy=".3em"
+  >
+    JLC
+  </text>
+</svg>
