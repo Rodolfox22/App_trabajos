@@ -208,6 +208,12 @@ function revisarArchivo() {
 function generarTextoFilas(columna1, columna2, columna3, terminado) {
   let operario = operarioActivo;
   let completo = "";
+  let parametro2 = parseFloat(columna2).toLocaleString("es-ES").toString();
+
+  if (parametro2 === "NaN") {
+    parametro2 = "";
+    console.log(parametro2);
+  }
 
   if (operarioActivo === noNombreOperario) {
     operario = "";
@@ -218,7 +224,7 @@ function generarTextoFilas(columna1, columna2, columna3, terminado) {
     //console.log("Trabajo completo");
   }
 
-  textoArchivo += `${columna1}\t${columna2}\t${columna3}${completo}\t${operario}\n`;
+  textoArchivo += `${columna1}\t${parametro2}\t${columna3}${completo}\t${operario}\n`;
 }
 
 function generarTextoHTML(columna1, columna2, columna3, terminado) {
@@ -238,7 +244,7 @@ function generarTextoHTML(columna1, columna2, columna3, terminado) {
 function actualizarResumen(fechaResumen, horasResumen) {
   let horasS = parseFloat(horasResumen);
   if (isNaN(horasS) || horasS == 0) {
-    console.log("Campo de horas en 0");
+    //console.log("Campo de horas en 0");
     return;
   }
 
@@ -284,7 +290,7 @@ function verTabla(ver = "") {
 }
 
 function verResumen(ver = "") {
-  const encabezadoResumen = "Resumen:<li>";
+  const encabezadoResumen = "<strong>Resumen:</strong><li>";
   const pieResumen = "</li>";
   let textoResumenHTML = "";
 
@@ -352,6 +358,7 @@ function insertarTexto(elemento, texto) {
   if (texto === undefined) {
     return;
   }
+
   if (texto.endsWith(" Completo.")) {
     const checkbox = document.getElementById(`checkbox${contadorLineas - 1}`);
     checkbox.checked = true;
