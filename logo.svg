@@ -5,8 +5,8 @@
   <!-- Letras "JLC" en color Rojo -->
   <text
     x="50%"
-    y="50%"
-    font-size="48"
+    y="37%"
+    font-size="130"
     font-family="Arial, sans-serif"
     font-weight="bold" 
     fill="#ff0000"
@@ -19,8 +19,8 @@
   <!-- Texto "Montajes Industriales" en color Azul -->
   <text
     x="50%"
-    y="80%"
-    font-size="18"
+    y="90%"
+    font-size="25"
     font-family="Arial, sans-serif"
     font-weight="bold" 
     fill="#0000ff"

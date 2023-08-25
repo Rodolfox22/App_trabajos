@@ -145,8 +145,8 @@ button:hover {
   margin: 1em;
   border-radius: 0.5em;
   padding: 1em;
-  min-width: 50%;
-  max-width: 50em;
+  max-width: 90%;
+  min-width: 16em;
 }
 
 .cajaBotones {
@@ -176,7 +176,13 @@ th {
   padding: 0.3em;
 }
 
-#info{
-margin-top: 1.5em;
-font-size: medium;
+#info {
+  margin-top: 1.5em;
+  font-size: medium;
+}
+
+#logo {
+  border-color: rgba(0, 0, 0, 0);
+  gap: 0em;
+  padding: 0em;
 }
