@@ -9,6 +9,7 @@ let operarioActivo = "";
 let noNombreOperario = "Trabajos";
 
 let textoAbierto = "";
+let archivoAgregar = "";
 const itemTextoAbierto = "textoAbierto";
 const itemNombreOperario = "nombreOperario";
 const itemNombreArchivo = "nombreArchivo";
@@ -33,9 +34,7 @@ function ingresarConNombre() {
   let nombreOperario = "";
 
   const operarioInput = document.getElementById("operario");
-
-  nombreOperario = operarioInput.value.trim();
-  //console.log(nombreOperario);
+  nombreOperario = operarioInput.value.split(" ")[0].trim();
   alertaNombre(nombreOperario);
 }
 
@@ -43,7 +42,9 @@ function ingresarConArchivo() {
   let nombreOperario = localStorage
     .getItem(itemTextoAbierto)
     .split("\n")[1]
-    .split("\t")[3];
+    .split("\t")[3]
+    .split(" ")[0]
+    .trim();
   //console.log(`Nombre: ${nombreOperario}`);
 
   alertaNombre(nombreOperario);
@@ -212,7 +213,7 @@ function generarTextoFilas(columna1, columna2, columna3, terminado) {
 
   if (parametro2 === "NaN") {
     parametro2 = "";
-    console.log(parametro2);
+    //console.log(parametro2);
   }
 
   if (operarioActivo === noNombreOperario) {
@@ -305,7 +306,7 @@ function verResumen(ver = "") {
     spanResumen.innerHTML = textoResumenHTML;
 
     /*Por ultimo genero nuevamente el texto para agregar al archivo guardado */
-    textoResumen = "\nResumen:\n" + horasPorFechaArray.join("\n");
+    textoResumen = "Resumen:\n" + horasPorFechaArray.join("\n");
     return;
   }
 
@@ -318,12 +319,10 @@ function adquirirTextoArchivo() {
   fileInput.addEventListener("change", function (event) {
     var file = event.target.files[0];
     var reader = new FileReader();
-    let nombreArchivo = "";
+    let nombreArchivo = "Continua edición actual";
 
     if (file) {
       nombreArchivo = file.name;
-    } else {
-      nombreArchivo = "Continua edición actual";
     }
 
     reader.onload = function (event) {
@@ -333,6 +332,25 @@ function adquirirTextoArchivo() {
 
     reader.readAsText(file);
     localStorage.setItem(itemNombreArchivo, nombreArchivo);
+  });
+
+  const fileAgregado = document.getElementById("archivoAgregar");
+
+  fileAgregado.addEventListener("change", function (event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    let nombreArchivo = "Continua edición actual";
+
+    if (file) {
+      nombreArchivo += file.name;
+    }
+
+    reader.onload = function (event) {
+      archivoAgregar += event.target.result.split("\n\n")[0]+"\n";
+      localStorage.setItem(itemTextoAbierto, archivoAgregar);
+    };
+
+    reader.readAsText(file);
   });
 }
 
@@ -346,7 +364,7 @@ function insertarElementos() {
     const descripcion = elemento[2];
 
     insertarFecha(`fecha${contadorLineas - 1}`, fecha);
-    insertarTexto(`horas${contadorLineas - 1}`, horas);
+    insertarNumero(`horas${contadorLineas - 1}`, horas);
     insertarTexto(`descripcion${contadorLineas - 1}`, descripcion);
 
     agregarLinea();
@@ -355,6 +373,7 @@ function insertarElementos() {
 
 function insertarTexto(elemento, texto) {
   const campoInput = document.getElementById(elemento);
+
   if (texto === undefined) {
     return;
   }
@@ -365,7 +384,19 @@ function insertarTexto(elemento, texto) {
     const indiceCompleto = texto.indexOf(" Completo.");
     texto = texto.slice(0, indiceCompleto).trim();
   }
+
   campoInput.value = texto;
+}
+
+function insertarNumero(elemento, numero) {
+  const campoInput = document.getElementById(elemento);
+  if (numero === undefined) {
+    return;
+  }
+  numero = numero.replace(",", ".");
+  const numeroIngresado = parseFloat(numero);
+
+  campoInput.value = isNaN(numeroIngresado) ? null : numeroIngresado;
 }
 
 function compartir() {
