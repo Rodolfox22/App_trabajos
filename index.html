@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Horas JLC</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" type="image/svg+xml" href="icono.svg"/>
+    <link rel="icon" type="image/svg+xml" href="icono.svg" />
   </head>
   <body>
     <div class="container">
       <div id="logo" class="box">
-          <img src="logo.svg" />
+        <img src="logo.svg" />
       </div>
       <div id="operarios" class="box">
         <input
@@ -22,7 +22,7 @@
           onkeydown="moverAlSiguienteCampo(event, 'ingresar')"
           required
         />
-        <button id="ingresar" onclick="ingresarConNombre()" >Ingresar</button>
+        <button id="ingresar" onclick="ingresarConNombre()">Ingresar</button>
       </div>
       <div id="archivo" class="box">
         <label for="archivoInput">Abrir archivo existente</label>
@@ -31,7 +31,7 @@
           id="archivoInput"
           onkeydown="moverAlSiguienteCampo(event, 'abrir')"
         />
-        <button id="abrir" onclick="ingresarConArchivo()" >Abrir</button>
+        <button id="abrir" onclick="ingresarConArchivo()">Abrir</button>
       </div>
       <div id="archivoUnido" class="box">
         <label for="archivoAgregar">Abrir Varios Archivos</label>
@@ -40,8 +40,11 @@
           id="archivoAgregar"
           onkeydown="moverAlSiguienteCampo(event, 'agregar')"
         />
-        <button id="agregar" onclick="ingresarConArchivo()" >Agregar</button>
-        <div>Los archivos ingresados en este apartado serán todos guardados con el mismo nombre de operario</div>
+        <button id="agregar" onclick="ingresarConArchivo()">Agregar</button>
+        <div>
+          Los archivos ingresados en este apartado serán todos guardados con el
+          mismo nombre de operario
+        </div>
       </div>
     </div>
     <script src="app.js"></script>

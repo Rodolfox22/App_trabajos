@@ -13,15 +13,17 @@ let archivoAgregar = "";
 const itemTextoAbierto = "textoAbierto";
 const itemNombreOperario = "nombreOperario";
 const itemNombreArchivo = "nombreArchivo";
+const trabajoCompleto = " Completo.";
+const eventoMover = "Mover";
 
 //Todo: Insertar logo en la portada, insertar logo en el icono
 function crearNuevaLineaHTML(lineaActual) {
   return `
     <div id="linea${lineaActual}">
       <label for="fecha${lineaActual}">${lineaActual}. </label>
-      <input type="date" id="fecha${lineaActual}" placeholder="dd-mm" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
-      <input type="number" id="horas${lineaActual}" placeholder="Hs" class="labelCorto" onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
-      <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" class="labelTrabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')" autocomplete="on">
+      <input type="date" id="fecha${lineaActual}" placeholder="dd-mm"  onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
+      <input type="number" id="horas${lineaActual}" placeholder="Hs"  onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
+      <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')" autocomplete="on">
       <input type="checkbox" id="checkbox${lineaActual}" class="checkbox" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')">
       <button onclick="insertarLinea(${lineaActual})" id= 'plusButton${lineaActual}' class="plusButton"> + </button>
       <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
@@ -76,13 +78,13 @@ function irAIngresoHoras(nombre) {
 
 function inicializarPagina2() {
   insertarNombre();
-  moverAlSiguienteCampo("Mover", "fecha1");
+  moverAlSiguienteCampo(eventoMover, "fecha1");
   insertarFecha("fecha1");
   textoAbierto = localStorage.getItem(itemTextoAbierto);
 
   if (textoAbierto !== "") {
     const imprimirNombreArchivo = localStorage.getItem(itemNombreArchivo);
-    console.log("Completando campos");
+    //console.log("Completando campos");
     insertarElementos();
     if (imprimirNombreArchivo !== null) {
       imprimirInfo(`El archivo abierto es: ${imprimirNombreArchivo}`);
@@ -92,7 +94,7 @@ function inicializarPagina2() {
 }
 
 function insertarNombre() {
-  let nombreOperario = localStorage.getItem(itemNombreOperario);
+  let nombreOperario = formatoNombre(localStorage.getItem(itemNombreOperario));
 
   if (nombreOperario === "undefined") {
     nombreOperario = noNombreOperario;
@@ -109,6 +111,11 @@ function insertarNombre() {
   operarioActivo = nombreOperario;
 }
 
+function formatoNombre(nombreActual) {
+  console.log("Formatear nombre")
+  return nombreActual.charAt(0).toUpperCase() + nombreActual.slice(1).toLowerCase();
+}
+
 function agregarLinea() {
   const lineasDiv = document.getElementById("lineas");
 
@@ -118,7 +125,7 @@ function agregarLinea() {
   );
 
   const nuevoCampoId = `fecha${contadorLineas}`;
-  moverAlSiguienteCampo("Mover", nuevoCampoId);
+  moverAlSiguienteCampo(eventoMover, nuevoCampoId);
   imprimirInfo(`Fue agregada la línea ${contadorLineas}`);
 
   contadorLineas++;
@@ -126,8 +133,6 @@ function agregarLinea() {
 }
 
 function insertarLinea(numeroLinea) {
-  const lineasDiv = document.getElementById("lineas");
-
   const lineaActual = document.getElementById(`linea${numeroLinea}`);
   lineaActual.insertAdjacentHTML(
     "afterend",
@@ -135,7 +140,7 @@ function insertarLinea(numeroLinea) {
   );
 
   const nuevoCampoId = `fecha${contadorLineas}`;
-  moverAlSiguienteCampo("Mover", nuevoCampoId);
+  moverAlSiguienteCampo(eventoMover, nuevoCampoId);
   imprimirInfo(`Fue insertada la línea ${contadorLineas}`);
 
   contadorLineas++;
@@ -146,7 +151,7 @@ function eliminarLinea(numeroLinea) {
   const linea = document.getElementById(`linea${numeroLinea}`);
   linea.remove();
 
-  moverAlSiguienteCampo("Mover", "nuevaLinea");
+  moverAlSiguienteCampo(eventoMover, "nuevaLinea");
   imprimirInfo(`La linea ${numeroLinea} fue eliminada`);
 }
 
@@ -221,7 +226,7 @@ function generarTextoFilas(columna1, columna2, columna3, terminado) {
   }
 
   if (terminado) {
-    completo = " Completo.";
+    completo = trabajoCompleto;
     //console.log("Trabajo completo");
   }
 
@@ -236,10 +241,10 @@ function generarTextoHTML(columna1, columna2, columna3, terminado) {
   }
 
   if (terminado) {
-    completo = " Completo.";
+    completo = trabajoCompleto;
   }
 
-  textoMuestraHTML += `<td>${columna1}</td>   <td>${columna2}</td>   <td class="descTabla">${columna3} ${completo}</td>   </tr>`;
+  textoMuestraHTML += `<tr>   <td>${columna1}</td>   <td>${columna2}</td>   <td class="descTabla">${columna3} ${completo}</td>   </tr>`;
 }
 
 function actualizarResumen(fechaResumen, horasResumen) {
@@ -278,8 +283,8 @@ function descargarArchivo() {
 
 function verTabla(ver = "") {
   const encabezadoTrabajos =
-    "<thead>    <tr>      <th>Fecha</th>      <th>Hs</th>      <th>Descripcion</th>    </tr>  </thead>  <tbody>    <tr>";
-  const pieTrabajos = "</tbody>";
+    "<table><thead>   <tr>   <th>Fecha</th>   <th>Hs</th>   <th>Descripcion</th>   </tr>   </thead>   <tbody>";
+  const pieTrabajos = "</tbody></table>";
   let textoTablaHTML = "";
 
   textoTablaHTML = encabezadoTrabajos;
@@ -297,13 +302,14 @@ function verResumen(ver = "") {
 
   if (ver === "") {
     /*Primero genero el resumen para visualizar en la app */
-    verTabla();
     textoResumenHTML = encabezadoResumen;
-    textoResumenHTML += `${horasPorFechaArray.join("</li><li>")}`;
+    textoResumenHTML += horasPorFechaArray.join("</li><li>");
     textoResumenHTML += pieResumen;
 
     const spanResumen = document.getElementById("resumen");
     spanResumen.innerHTML = textoResumenHTML;
+
+    verTabla();
 
     /*Por ultimo genero nuevamente el texto para agregar al archivo guardado */
     textoResumen = "Resumen:\n" + horasPorFechaArray.join("\n");
@@ -346,7 +352,7 @@ function adquirirTextoArchivo() {
     }
 
     reader.onload = function (event) {
-      archivoAgregar += event.target.result.split("\n\n")[0]+"\n";
+      archivoAgregar += event.target.result.split("\n\n")[0] + "\n";
       localStorage.setItem(itemTextoAbierto, archivoAgregar);
     };
 
@@ -378,10 +384,10 @@ function insertarTexto(elemento, texto) {
     return;
   }
 
-  if (texto.endsWith(" Completo.")) {
+  if (texto.endsWith(trabajoCompleto)) {
     const checkbox = document.getElementById(`checkbox${contadorLineas - 1}`);
     checkbox.checked = true;
-    const indiceCompleto = texto.indexOf(" Completo.");
+    const indiceCompleto = texto.indexOf(trabajoCompleto);
     texto = texto.slice(0, indiceCompleto).trim();
   }
 
@@ -434,13 +440,13 @@ function compartir() {
   localStorage.setItem(itemTextoAbierto, "");
 }
 
-function moverAlSiguienteCampo(event, siguienteCampoId) {
-  if (event.key === "Enter") {
-    event.preventDefault();
+function moverAlSiguienteCampo(evento, siguienteCampoId) {
+  if (evento.key === "Enter") {
+    evento.preventDefault();
     document.getElementById(siguienteCampoId).focus();
   }
 
-  if (event === "Mover") {
+  if (evento === eventoMover) {
     document.getElementById(siguienteCampoId).focus();
   }
 }
