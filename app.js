@@ -43,7 +43,7 @@ function ingresarConNombre() {
 function ingresarConArchivo() {
   let nombreOperario = localStorage
     .getItem(itemTextoAbierto)
-    .split("\n")[1]
+    .split("\n")[0]
     .split("\t")[3]
     .split(" ")[0]
     .trim();
@@ -112,8 +112,10 @@ function insertarNombre() {
 }
 
 function formatoNombre(nombreActual) {
-  console.log("Formatear nombre")
-  return nombreActual.charAt(0).toUpperCase() + nombreActual.slice(1).toLowerCase();
+  console.log("Formatear nombre");
+  return (
+    nombreActual.charAt(0).toUpperCase() + nombreActual.slice(1).toLowerCase()
+  );
 }
 
 function agregarLinea() {
@@ -167,8 +169,9 @@ function revisarArchivo() {
 
   let lineasincompletas = [];
   let fechaAnterior = "";
+  const largoLineas = lineasInputs.length;
 
-  for (let i = 0; i < lineasInputs.length; i += 4) {
+  for (let i = 0; i < largoLineas; i += 4) {
     let fecha = lineasInputs[i].value.trim();
     const horas = lineasInputs[i + 1].value;
     const descripcion = lineasInputs[i + 2].value;
@@ -178,6 +181,10 @@ function revisarArchivo() {
       fecha = fechaAnterior;
     }
     const fechaFiltrada = procesarFecha(fecha);
+
+    if (i && i < largoLineas - 4) {
+      textoArchivo += "\n";
+    }
 
     /*Comprovacion */
     if (horas.trim() !== "" || descripcion.trim() !== "") {
@@ -206,6 +213,7 @@ function revisarArchivo() {
 
   /*Visualizo resumen */
   verResumen();
+  verTabla();
 
   //console.log(textoResumen);
   localStorage.setItem(itemTextoAbierto, textoArchivo);
@@ -230,7 +238,7 @@ function generarTextoFilas(columna1, columna2, columna3, terminado) {
     //console.log("Trabajo completo");
   }
 
-  textoArchivo += `${columna1}\t${parametro2}\t${columna3}${completo}\t${operario}\n`;
+  textoArchivo += `${columna1}\t${parametro2}\t${columna3}${completo}\t${operario}`;
 }
 
 function generarTextoHTML(columna1, columna2, columna3, terminado) {
@@ -263,7 +271,7 @@ function actualizarResumen(fechaResumen, horasResumen) {
 
 function generarArchivo() {
   revisarArchivo();
-  verResumen("imprimir");
+  agregarResumen();
   descargarArchivo();
 }
 
@@ -295,28 +303,22 @@ function verTabla(ver = "") {
   spanTabla.innerHTML = textoTablaHTML;
 }
 
-function verResumen(ver = "") {
+function verResumen() {
   const encabezadoResumen = "<strong>Resumen:</strong><li>";
   const pieResumen = "</li>";
   let textoResumenHTML = "";
+  console.log("Ver resumen");
+  /*Primero genero el resumen para visualizar en la app */
+  textoResumenHTML = encabezadoResumen;
+  textoResumenHTML += horasPorFechaArray.join("</li><li>");
+  textoResumenHTML += pieResumen;
 
-  if (ver === "") {
-    /*Primero genero el resumen para visualizar en la app */
-    textoResumenHTML = encabezadoResumen;
-    textoResumenHTML += horasPorFechaArray.join("</li><li>");
-    textoResumenHTML += pieResumen;
+  const spanResumen = document.getElementById("resumen");
+  spanResumen.innerHTML = textoResumenHTML;
+}
 
-    const spanResumen = document.getElementById("resumen");
-    spanResumen.innerHTML = textoResumenHTML;
-
-    verTabla();
-
-    /*Por ultimo genero nuevamente el texto para agregar al archivo guardado */
-    textoResumen = "Resumen:\n" + horasPorFechaArray.join("\n");
-    return;
-  }
-
-  textoArchivo += "\n" + textoResumen;
+function agregarResumen() {
+  textoArchivo += "\n\nResumen:\n" + horasPorFechaArray.join("\n");
 }
 
 function adquirirTextoArchivo() {
@@ -332,7 +334,7 @@ function adquirirTextoArchivo() {
     }
 
     reader.onload = function (event) {
-      var fileContent = event.target.result;
+      var fileContent = event.target.result.trim();
       localStorage.setItem(itemTextoAbierto, fileContent);
     };
 
@@ -373,6 +375,10 @@ function insertarElementos() {
     insertarNumero(`horas${contadorLineas - 1}`, horas);
     insertarTexto(`descripcion${contadorLineas - 1}`, descripcion);
 
+    if (horas === 0 && descripcion === "") {
+      console.log("No hay elemento para ingresar");
+      return;
+    }
     agregarLinea();
   }
 }
@@ -407,7 +413,7 @@ function insertarNumero(elemento, numero) {
 
 function compartir() {
   revisarArchivo();
-  verResumen("imprimir");
+  agregarResumen();
 
   // Crea un Blob con el contenido
   const blob = new Blob([textoArchivo], { type: "text/plain" });
