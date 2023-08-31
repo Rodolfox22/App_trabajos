@@ -66,7 +66,7 @@ function alertaNombre(nombreOperario) {
     return;
   }
 
-  console.log("El usuario canceló el ingreso.");
+  //console.log("El usuario canceló el ingreso.");
   return "";
 }
 
@@ -112,7 +112,7 @@ function insertarNombre() {
 }
 
 function formatoNombre(nombreActual) {
-  console.log("Formatear nombre");
+  //console.log("Formatear nombre");
   return (
     nombreActual.charAt(0).toUpperCase() + nombreActual.slice(1).toLowerCase()
   );
@@ -158,7 +158,7 @@ function eliminarLinea(numeroLinea) {
 }
 
 function revisarArchivo() {
-  console.log("Revisando archivo");
+  //console.log("Revisando archivo");
   const lineasDiv = document.getElementById("lineas");
   const lineasInputs = lineasDiv.getElementsByTagName("input");
 
@@ -291,13 +291,15 @@ function descargarArchivo() {
 }
 
 function verTabla(ver = "") {
+  const copiar =
+    '<div class="divCopiar"><a onclick="copiartexto()">[Copiar]</a></div>';
   const encabezadoTrabajos =
     "<table><thead>   <tr>   <th>Fecha</th>   <th>Hs</th>   <th>Descripcion</th>   </tr>   </thead>   <tbody>";
-  const pieTrabajos =
-    '</tbody></table> <div class="divCopiar"><a onclick="copiartexto()">[Copiar]</a></div>';
-  let textoTablaHTML = "";
+  const pieTrabajos = "</tbody></table>";
 
-  textoTablaHTML = encabezadoTrabajos;
+  let textoTablaHTML = "";
+  textoTablaHTML += copiar;
+  textoTablaHTML += encabezadoTrabajos;
   textoTablaHTML += textoMuestraHTML;
   textoTablaHTML += pieTrabajos;
 
@@ -373,11 +375,13 @@ function insertarElementos() {
     const horas = elemento[1];
     const descripcion = elemento[2];
 
-    insertarFecha(`fecha${contadorLineas - 1}`, fecha);
-    insertarNumero(`horas${contadorLineas - 1}`, horas);
-    insertarTexto(`descripcion${contadorLineas - 1}`, descripcion);
+    if (largoElemento) {
+      insertarFecha(`fecha${contadorLineas - 1}`, fecha);
+      insertarNumero(`horas${contadorLineas - 1}`, horas);
+      insertarTexto(`descripcion${contadorLineas - 1}`, descripcion);
 
-    agregarLinea();
+      agregarLinea();
+    }
   }
 }
 
@@ -429,7 +433,7 @@ function compartir() {
         files: [archivo],
       })
       .then(() => {
-        console.log("Archivo compartido exitosamente.");
+        //console.log("Archivo compartido exitosamente.");
         imprimirInfo("Archivo compartido exitosamente.");
       })
       .catch((error) => {
@@ -438,7 +442,8 @@ function compartir() {
         return;
       });
   } else {
-    console.log("La API de Web Share no está soportada en este navegador.");
+    //console.log("La API de Web Share no está soportada en este navegador.");
+    imprimirInfo("La API de Web Share no está soportada en este navegador.");
     return;
   }
   localStorage.setItem(itemTextoAbierto, "");
