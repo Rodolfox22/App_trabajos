@@ -15,8 +15,8 @@ const itemNombreOperario = "nombreOperario";
 const itemNombreArchivo = "nombreArchivo";
 const trabajoCompleto = " Completo.";
 const eventoMover = "Mover";
+const tagResumen = "\n\nResumen:\n";
 
-//Todo: Insertar logo en la portada, insertar logo en el icono
 function crearNuevaLineaHTML(lineaActual) {
   return `
     <div id="linea${lineaActual}">
@@ -173,21 +173,22 @@ function revisarArchivo() {
 
   for (let i = 0; i < largoLineas; i += 4) {
     let fecha = lineasInputs[i].value.trim();
-    const horas = lineasInputs[i + 1].value;
-    const descripcion = lineasInputs[i + 2].value;
+    const horas = lineasInputs[i + 1].value.trim();
+    const descripcion = lineasInputs[i + 2].value.trim();
     const isChecked = lineasInputs[i + 3].checked;
 
     if (fecha === "") {
       fecha = fechaAnterior;
     }
+
     const fechaFiltrada = procesarFecha(fecha);
 
-    if (i && i < largoLineas - 4) {
-      textoArchivo += "\n";
-    }
-
     /*Comprovacion */
-    if (horas.trim() !== "" || descripcion.trim() !== "") {
+    if (horas !== "" || descripcion !== "") {
+      if (i) {
+        textoArchivo += "\n";
+      }
+
       generarTextoFilas(fechaFiltrada, horas, descripcion, isChecked);
       generarTextoHTML(fechaFiltrada, horas, descripcion, isChecked);
     } else {
@@ -197,7 +198,7 @@ function revisarArchivo() {
     fechaAnterior = fecha;
   }
 
-  /*Visualizar en consola el textoResumen*/
+  /*Generar resumen de horas*/
   horasPorFechaArray = Object.entries(horasPorFecha).map(
     ([fecha, horas]) => `${fecha}: ${horas} hs.`
   );
@@ -211,7 +212,7 @@ function revisarArchivo() {
   const tooltip = document.getElementById("tooltip");
   tooltip.innerHTML = tooltipText;
 
-  /*Visualizo resumen */
+  /*Visualizo resumen y tabla de trabajos*/
   verResumen();
   verTabla();
 
@@ -252,7 +253,7 @@ function generarTextoHTML(columna1, columna2, columna3, terminado) {
     completo = trabajoCompleto;
   }
 
-  textoMuestraHTML += `<tr>   <td>${columna1}</td>   <td>${columna2}</td>   <td class="descTabla">${columna3} ${completo}</td>   </tr>`;
+  textoMuestraHTML += `<tr>   <td>${columna1}</td>   <td>${columna2}</td>   <td class="descripcionTabla">${columna3} ${completo}</td>   </tr>`;
 }
 
 function actualizarResumen(fechaResumen, horasResumen) {
@@ -292,7 +293,8 @@ function descargarArchivo() {
 function verTabla(ver = "") {
   const encabezadoTrabajos =
     "<table><thead>   <tr>   <th>Fecha</th>   <th>Hs</th>   <th>Descripcion</th>   </tr>   </thead>   <tbody>";
-  const pieTrabajos = "</tbody></table>";
+  const pieTrabajos =
+    '</tbody></table> <div class="divCopiar"><a onclick="copiartexto()">[Copiar]</a></div>';
   let textoTablaHTML = "";
 
   textoTablaHTML = encabezadoTrabajos;
@@ -307,8 +309,7 @@ function verResumen() {
   const encabezadoResumen = "<strong>Resumen:</strong><li>";
   const pieResumen = "</li>";
   let textoResumenHTML = "";
-  console.log("Ver resumen");
-  /*Primero genero el resumen para visualizar en la app */
+
   textoResumenHTML = encabezadoResumen;
   textoResumenHTML += horasPorFechaArray.join("</li><li>");
   textoResumenHTML += pieResumen;
@@ -318,7 +319,7 @@ function verResumen() {
 }
 
 function agregarResumen() {
-  textoArchivo += "\n\nResumen:\n" + horasPorFechaArray.join("\n");
+  textoArchivo += tagResumen + horasPorFechaArray.join("\n");
 }
 
 function adquirirTextoArchivo() {
@@ -363,10 +364,11 @@ function adquirirTextoArchivo() {
 }
 
 function insertarElementos() {
-  const seccion = textoAbierto.split("\n\n");
-  const linea = seccion[0].split("\n");
-  for (let index = 0; index < linea.length; index++) {
-    const elemento = linea[index].split("\t");
+  const seccion = textoAbierto.split(tagResumen);
+  const lineasAInsertar = seccion[0].split("\n");
+  for (let index = 0; index < lineasAInsertar.length; index++) {
+    const largoElemento = lineasAInsertar[index].length;
+    const elemento = lineasAInsertar[index].split("\t");
     let fecha = elemento[0];
     const horas = elemento[1];
     const descripcion = elemento[2];
@@ -375,10 +377,6 @@ function insertarElementos() {
     insertarNumero(`horas${contadorLineas - 1}`, horas);
     insertarTexto(`descripcion${contadorLineas - 1}`, descripcion);
 
-    if (horas === 0 && descripcion === "") {
-      console.log("No hay elemento para ingresar");
-      return;
-    }
     agregarLinea();
   }
 }
@@ -504,4 +502,22 @@ function imprimirInfo(texto) {
   //console.log(`Imprimir texto: ${texto}`);
   const spanInfo = document.getElementById("info");
   spanInfo.innerHTML = texto;
+}
+
+function copiartexto() {
+  var textoACopiar = textoArchivo; // Tu variable con el texto
+
+  // Usar la API Clipboard para copiar el contenido
+  navigator.clipboard
+    .writeText(textoACopiar)
+    .then(function () {
+      // Mostrar mensaje de éxito
+      //alert("Texto copiado: " + textoACopiar);
+      imprimirInfo("Texto copiado");
+    })
+    .catch(function (err) {
+      // Mostrar mensaje de error si no se pudo copiar
+      console.error("Error al copiar el texto:", err);
+      imprimirInfo(`Error al copiar el texto: ${err}`);
+    });
 }
