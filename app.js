@@ -298,10 +298,10 @@ function verTabla(ver = "") {
   const pieTrabajos = "</tbody></table>";
 
   let textoTablaHTML = "";
-  textoTablaHTML += copiar;
   textoTablaHTML += encabezadoTrabajos;
   textoTablaHTML += textoMuestraHTML;
   textoTablaHTML += pieTrabajos;
+  textoTablaHTML += copiar;
 
   const spanTabla = document.getElementById("tabla");
   spanTabla.innerHTML = textoTablaHTML;
