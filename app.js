@@ -288,6 +288,7 @@ function descargarArchivo() {
 
   URL.revokeObjectURL(url);
   imprimirInfo("Archivo guardado en memoria");
+  localStorage.setItem(itemTextoAbierto, "");
 }
 
 function verTabla(ver = "") {
@@ -416,7 +417,10 @@ function insertarNumero(elemento, numero) {
 function compartir() {
   revisarArchivo();
   agregarResumen();
+  compartirPor();
+}
 
+function compartirPor() {
   // Crea un Blob con el contenido
   const blob = new Blob([textoArchivo], { type: "text/plain" });
   const fechaHoy = obtenerFechaActual();
