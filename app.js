@@ -32,21 +32,16 @@ function crearNuevaLineaHTML(lineaActual) {
 }
 
 function ingresarConNombre() {
-  localStorage.setItem(itemTextoAbierto, "");
-  let nombreOperario = "";
-
+  borrarDatos(itemTextoAbierto);
   const operarioInput = document.getElementById("operario");
-  nombreOperario = operarioInput.value.split(" ")[0].trim();
-  alertaNombre(nombreOperario);
+  alertaNombre(operarioInput.value);
 }
 
 function ingresarConArchivo() {
-  let nombreOperario = localStorage
+  const nombreOperario = localStorage
     .getItem(itemTextoAbierto)
     .split("\n")[0]
-    .split("\t")[3]
-    .split(" ")[0]
-    .trim();
+    .split("\t")[3];
   //console.log(`Nombre: ${nombreOperario}`);
 
   alertaNombre(nombreOperario);
@@ -62,16 +57,18 @@ function alertaNombre(nombreOperario) {
 
   if (textoIngresado !== null) {
     //console.log(`Nombre: ${textoIngresado}`);
-    irAIngresoHoras(textoIngresado.trim());
+    irAIngresoHoras(textoIngresado);
     return;
   }
 
   //console.log("El usuario canceló el ingreso.");
-  return "";
+  return;
 }
 
-function irAIngresoHoras(nombre) {
-  localStorage.setItem(itemNombreOperario, nombre);
+function irAIngresoHoras(nombreEstampado) {
+  nombreEstampado = formatoNombre(nombreEstampado);
+
+  localStorage.setItem(itemNombreOperario, nombreEstampado);
 
   window.location.href = "horas.html";
 }
@@ -111,10 +108,13 @@ function insertarNombre() {
   operarioActivo = nombreOperario;
 }
 
-function formatoNombre(nombreActual) {
+function formatoNombre(nombreInsertado) {
   //console.log("Formatear nombre");
+  const nombreFiltrado = nombreInsertado.split(" ")[0].trim();
+
   return (
-    nombreActual.charAt(0).toUpperCase() + nombreActual.slice(1).toLowerCase()
+    nombreFiltrado.charAt(0).toUpperCase() +
+    nombreFiltrado.slice(1).toLowerCase()
   );
 }
 
@@ -288,10 +288,10 @@ function descargarArchivo() {
 
   URL.revokeObjectURL(url);
   imprimirInfo("Archivo guardado en memoria");
-  localStorage.setItem(itemTextoAbierto, "");
+  borrarDatos(itemTextoAbierto);
 }
 
-function verTabla(ver = "") {
+function verTabla() {
   const copiar =
     '<div class="divCopiar"><a onclick="copiartexto()">[Copiar]</a></div>';
   const encabezadoTrabajos =
@@ -450,7 +450,7 @@ function compartirPor() {
     imprimirInfo("La API de Web Share no está soportada en este navegador.");
     return;
   }
-  localStorage.setItem(itemTextoAbierto, "");
+  borrarDatos(itemTextoAbierto);
 }
 
 function moverAlSiguienteCampo(evento, siguienteCampoId) {
@@ -529,4 +529,8 @@ function copiartexto() {
       console.error("Error al copiar el texto:", err);
       imprimirInfo(`Error al copiar el texto: ${err}`);
     });
+}
+
+function borrarDatos(dato) {
+  localStorage.setItem(dato, "");
 }
