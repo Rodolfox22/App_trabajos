@@ -10,9 +10,9 @@ let noNombreOperario = "Trabajos";
 
 let textoAbierto = "";
 let archivoAgregar = "";
-const itemTextoAbierto = "textoAbierto";
-const itemNombreOperario = "nombreOperario";
-const itemNombreArchivo = "nombreArchivo";
+const claveTextoAbierto = "textoAbierto";
+const claveNombreOperario = "nombreOperario";
+const claveNombreArchivo = "nombreArchivo";
 const trabajoCompleto = " Completo.";
 const eventoMover = "Mover";
 const tagResumen = "\n\nResumen:\n";
@@ -32,14 +32,14 @@ function crearNuevaLineaHTML(lineaActual) {
 }
 
 function ingresarConNombre() {
-  borrarDatos(itemTextoAbierto);
+  borrarDatos(claveTextoAbierto);
   const operarioInput = document.getElementById("operario");
   alertaNombre(operarioInput.value);
 }
 
 function ingresarConArchivo() {
   const nombreOperario = localStorage
-    .getItem(itemTextoAbierto)
+    .getItem(claveTextoAbierto)
     .split("\n")[0]
     .split("\t")[3];
   //console.log(`Nombre: ${nombreOperario}`);
@@ -53,9 +53,9 @@ function alertaNombre(nombreOperario) {
     return;
   }
 
-  const textoIngresado = window.prompt("Ingresar nombre:");
+  const textoIngresado = window.prompt("Ingresar nombre:").trim();
 
-  if (textoIngresado !== null) {
+  if (textoIngresado !== null && textoIngresado!=="") {
     //console.log(`Nombre: ${textoIngresado}`);
     irAIngresoHoras(textoIngresado);
     return;
@@ -68,7 +68,7 @@ function alertaNombre(nombreOperario) {
 function irAIngresoHoras(nombreEstampado) {
   nombreEstampado = formatoNombre(nombreEstampado);
 
-  localStorage.setItem(itemNombreOperario, nombreEstampado);
+  localStorage.setItem(claveNombreOperario, nombreEstampado);
 
   window.location.href = "horas.html";
 }
@@ -77,10 +77,10 @@ function inicializarPagina2() {
   insertarNombre();
   moverAlSiguienteCampo(eventoMover, "fecha1");
   insertarFecha("fecha1");
-  textoAbierto = localStorage.getItem(itemTextoAbierto);
+  textoAbierto = localStorage.getItem(claveTextoAbierto);
 
   if (textoAbierto !== "") {
-    const imprimirNombreArchivo = localStorage.getItem(itemNombreArchivo);
+    const imprimirNombreArchivo = localStorage.getItem(claveNombreArchivo);
     //console.log("Completando campos");
     insertarElementos();
     if (imprimirNombreArchivo !== null) {
@@ -91,7 +91,7 @@ function inicializarPagina2() {
 }
 
 function insertarNombre() {
-  let nombreOperario = formatoNombre(localStorage.getItem(itemNombreOperario));
+  let nombreOperario = formatoNombre(localStorage.getItem(claveNombreOperario));
 
   if (nombreOperario === "undefined") {
     nombreOperario = noNombreOperario;
@@ -217,7 +217,7 @@ function revisarArchivo() {
   verTabla();
 
   //console.log(textoResumen);
-  localStorage.setItem(itemTextoAbierto, textoArchivo);
+  localStorage.setItem(claveTextoAbierto, textoArchivo);
 }
 
 function generarTextoFilas(columna1, columna2, columna3, terminado) {
@@ -288,7 +288,7 @@ function descargarArchivo() {
 
   URL.revokeObjectURL(url);
   imprimirInfo("Archivo guardado en memoria");
-  borrarDatos(itemTextoAbierto);
+  borrarDatos(claveTextoAbierto);
 }
 
 function verTabla() {
@@ -329,8 +329,8 @@ function adquirirTextoArchivo() {
   const fileInput = document.getElementById("archivoInput");
 
   fileInput.addEventListener("change", function (event) {
-    var file = event.target.files[0];
-    var reader = new FileReader();
+    let file = event.target.files[0];
+    let reader = new FileReader();
     let nombreArchivo = "Continua edición actual";
 
     if (file) {
@@ -338,19 +338,19 @@ function adquirirTextoArchivo() {
     }
 
     reader.onload = function (event) {
-      var fileContent = event.target.result.trim();
-      localStorage.setItem(itemTextoAbierto, fileContent);
+      let fileContent = event.target.result.trim();
+      localStorage.setItem(claveTextoAbierto, fileContent);
     };
 
     reader.readAsText(file);
-    localStorage.setItem(itemNombreArchivo, nombreArchivo);
+    localStorage.setItem(claveNombreArchivo, nombreArchivo);
   });
 
   const fileAgregado = document.getElementById("archivoAgregar");
 
   fileAgregado.addEventListener("change", function (event) {
-    var file = event.target.files[0];
-    var reader = new FileReader();
+    let file = event.target.files[0];
+    let reader = new FileReader();
     let nombreArchivo = "Continua edición actual";
 
     if (file) {
@@ -359,7 +359,7 @@ function adquirirTextoArchivo() {
 
     reader.onload = function (event) {
       archivoAgregar += event.target.result.split("\n\n")[0] + "\n";
-      localStorage.setItem(itemTextoAbierto, archivoAgregar);
+      localStorage.setItem(claveTextoAbierto, archivoAgregar);
     };
 
     reader.readAsText(file);
@@ -450,7 +450,7 @@ function compartirPor() {
     imprimirInfo("La API de Web Share no está soportada en este navegador.");
     return;
   }
-  borrarDatos(itemTextoAbierto);
+  borrarDatos(claveTextoAbierto);
 }
 
 function moverAlSiguienteCampo(evento, siguienteCampoId) {
@@ -514,7 +514,7 @@ function imprimirInfo(texto) {
 }
 
 function copiartexto() {
-  var textoACopiar = textoArchivo; // Tu variable con el texto
+  let textoACopiar = textoArchivo; // Tu variable con el texto
 
   // Usar la API Clipboard para copiar el contenido
   navigator.clipboard

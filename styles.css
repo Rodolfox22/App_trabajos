@@ -51,6 +51,11 @@ input[type="date"] {
   min-width: 4em;
 }
 
+.ingresoIndex{
+width: 80%;
+max-width: 30em;
+}
+
 .checkbox {
   min-width: 1.5em;
   max-width: 1.5em;
@@ -127,7 +132,6 @@ button:hover {
 
 .container {
   display: grid;
-  max-width: 80vh;
   grid-template-rows: 25% auto;
   gap: 0.1em;
   margin: 0.5em;
@@ -188,7 +192,7 @@ th {
   padding: 0.3em;
 }
 
-#info {
+.info {
   margin-top: 1.5em;
   font-size: medium;
 }

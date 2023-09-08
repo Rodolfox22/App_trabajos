@@ -17,6 +17,7 @@
           type="text"
           id="operario"
           name="name"
+          class="ingresoIndex"
           placeholder="Ingrese su nombre"
           autocomplete="on"
           onkeydown="moverAlSiguienteCampo(event, 'ingresar')"
@@ -29,6 +30,7 @@
         <input
           type="file"
           id="archivoInput"
+          class="ingresoIndex"
           onkeydown="moverAlSiguienteCampo(event, 'abrir')"
         />
         <button id="abrir" onclick="ingresarConArchivo()">Abrir</button>
@@ -38,10 +40,11 @@
         <input
           type="file"
           id="archivoAgregar"
+          class="ingresoIndex"
           onkeydown="moverAlSiguienteCampo(event, 'agregar')"
         />
         <button id="agregar" onclick="ingresarConArchivo()">Agregar</button>
-        <p>
+        <p class="info">
           Los archivos ingresados en este apartado serán todos guardados con el
           mismo nombre de operario
         </p>
