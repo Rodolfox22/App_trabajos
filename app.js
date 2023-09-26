@@ -32,7 +32,10 @@ function crearNuevaLineaHTML(lineaActual) {
 }
 
 function ingresarConNombre() {
-  borrarDatos(claveTextoAbierto);
+  const datos = localStorage.getItem(claveTextoAbierto);
+  if (datos !== "") {
+    borrarDatos(claveTextoAbierto);
+  }
   const operarioInput = document.getElementById("operario");
   alertaNombre(operarioInput.value);
 }
@@ -55,7 +58,7 @@ function alertaNombre(nombreOperario) {
 
   const textoIngresado = window.prompt("Ingresar nombre:").trim();
 
-  if (textoIngresado !== null && textoIngresado!=="") {
+  if (textoIngresado !== null && textoIngresado !== "") {
     //console.log(`Nombre: ${textoIngresado}`);
     irAIngresoHoras(textoIngresado);
     return;
@@ -532,5 +535,9 @@ function copiartexto() {
 }
 
 function borrarDatos(dato) {
-  localStorage.setItem(dato, "");
+  const pregunta = confirm("¿Desea borrar los datos guardados?");
+  console.log("Desea borrar los datos?");
+  if (pregunta) {
+    localStorage.setItem(dato, "");
+  }
 }
