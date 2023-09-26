@@ -33,11 +33,11 @@ function crearNuevaLineaHTML(lineaActual) {
 
 function ingresarConNombre() {
   const datos = localStorage.getItem(claveTextoAbierto);
+  const operarioInput = document.getElementById("operario");
+  alertaNombre(operarioInput.value);
   if (datos !== "") {
     borrarDatos(claveTextoAbierto);
   }
-  const operarioInput = document.getElementById("operario");
-  alertaNombre(operarioInput.value);
 }
 
 function ingresarConArchivo() {
@@ -536,8 +536,8 @@ function copiartexto() {
 
 function borrarDatos(dato) {
   const pregunta = confirm("¿Desea borrar los datos guardados?");
-  console.log("Desea borrar los datos?");
   if (pregunta) {
     localStorage.setItem(dato, "");
+    alert("Datos borrados con éxito");
   }
 }

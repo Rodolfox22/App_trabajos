@@ -132,10 +132,11 @@ button:hover {
 
 .container {
   display: grid;
-  grid-template-rows: 25% auto;
+  /*grid-template-rows: 25% auto;*/
   gap: 0.1em;
   margin: 0.5em;
   justify-content: center;
+  width: auto;
 }
 
 .box {
