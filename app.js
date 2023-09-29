@@ -36,7 +36,7 @@ function ingresarConNombre() {
   const operarioInput = document.getElementById("operario");
   alertaNombre(operarioInput.value);
   if (datos !== "") {
-    borrarDatos(claveTextoAbierto);
+    borrarDatos(claveTextoAbierto, false);
   }
 }
 
@@ -534,10 +534,13 @@ function copiartexto() {
     });
 }
 
-function borrarDatos(dato) {
-  const pregunta = confirm("¿Desea borrar los datos guardados?");
-  if (pregunta) {
+function borrarDatos(dato, recargar = true) {
+  const borrando = confirm("¿Desea borrar los datos guardados?");
+  if (borrando) {
     localStorage.setItem(dato, "");
-    alert("Datos borrados con éxito");
+    alert("Datos borrados con éxito.");
+    if (recargar) {
+      location.reload();
+    }
   }
 }
