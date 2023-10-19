@@ -540,7 +540,9 @@ function borrarDatos(dato, recargar = true) {
     localStorage.setItem(dato, "");
     alert("Datos borrados con éxito.");
     if (recargar) {
-      location.reload();
+      window.location.href = window.location.href;
+      return;
     }
+    console.log("No se recargó la pagina");
   }
 }
