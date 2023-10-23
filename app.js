@@ -1,4 +1,4 @@
-let contadorLineas = 2;
+let contadorLineas = 1;
 let textoArchivo = "";
 let textoMuestraHTML = "";
 let textoResumen = "";
@@ -78,10 +78,10 @@ function irAIngresoHoras(nombreEstampado) {
 
 function inicializarPagina2() {
   insertarNombre();
-  moverAlSiguienteCampo(eventoMover, "fecha1");
+  agregarLinea();
   insertarFecha("fecha1");
   textoAbierto = localStorage.getItem(claveTextoAbierto);
-
+  
   if (textoAbierto !== "") {
     const imprimirNombreArchivo = localStorage.getItem(claveNombreArchivo);
     //console.log("Completando campos");
@@ -218,9 +218,10 @@ function revisarArchivo() {
   /*Visualizo resumen y tabla de trabajos*/
   verResumen();
   verTabla();
-
-  //console.log(textoResumen);
-  localStorage.setItem(claveTextoAbierto, textoArchivo);
+  //console.log(textoArchivo.length);
+  if (textoArchivo != "") {
+    localStorage.setItem(claveTextoAbierto, textoArchivo);
+  }
 }
 
 function generarTextoFilas(columna1, columna2, columna3, terminado) {

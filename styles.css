@@ -169,6 +169,15 @@ button:hover {
   padding: 1em 1em;
   margin: 1em;
 }
+
+.botonLimpiar{
+  background-color: #ff0000;
+}
+
+.botonLimpiar:hover{
+  background-color: #ff5050;
+}
+
 table,
 .descripcionTabla {
   border: 0.1em solid #ccc;
