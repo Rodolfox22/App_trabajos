@@ -17,6 +17,41 @@ const trabajoCompleto = " Completo.";
 const eventoMover = "Mover";
 const tagResumen = "\n\nResumen:\n";
 
+//window.onload(inicio);
+
+function inicio() {
+  document
+    .getElementById("operarios")
+    .onkeydown(moverAlSiguienteCampo(event, "ingresar"));
+  document
+    .getElementById("archivoInput")
+    .onkeydown(moverAlSiguienteCampo(event, "ingresar"));
+  document.getElementById("ingresar").onclick(ingresarConNombre);
+  document.getElementById("abrir").onclick(ingresarConArchivo);
+  document.getElementById("nuevaLinea").onclick(agregarLinea);
+  document
+    .getElementById("botonLimpiar")
+    .onclick(borrarDatos(claveTextoAbierto));
+  document.getElementById("botonCompartir").onclick(compartir);
+  document.getElementById("botonRevisar").onclick(revisarArchivo);
+  document.getElementById("botonRevisar").onmouseover(revisarArchivo);
+  
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/service-worker.js")
+        .then((registration) => {
+          console.log("Service Worker registrado con éxito:", registration);
+        })
+        .catch((error) => {
+          console.log("Error al registrar el Service Worker:", error);
+        });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", adquirirTextoArchivo);
+}
+
 function crearNuevaLineaHTML(lineaActual) {
   return `
     <div id="linea${lineaActual}">
@@ -81,7 +116,7 @@ function inicializarPagina2() {
   agregarLinea();
   insertarFecha("fecha1");
   textoAbierto = localStorage.getItem(claveTextoAbierto);
-  
+
   if (textoAbierto !== "") {
     const imprimirNombreArchivo = localStorage.getItem(claveNombreArchivo);
     //console.log("Completando campos");

@@ -1,3 +1,7 @@
+<!--TODO: hacer un menu interactivo superior, mejorar el frontend-->
+<!--TODO: mover los eventos solo a js, en estado de prueva-->
+<!--TODO: reemplazar los alertas para que mejore la vista, -->
+<!--TODO: agrandar el tamaño de la fuente-->
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -6,46 +10,12 @@
     <title>Registro de Trabajos JLC</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/svg+xml" href="icono.svg" />
+    <script src="app.js"></script>
   </head>
   <body>
     <h1>Trabajos JLC</h1>
     <div id="nombre"></div>
     <div id="lineas">
-      <!--
-        <div id="linea1">
-          <label for="fecha1">1. </label>
-        <input
-          type="date"
-          id="fecha1"
-          placeholder="dd-mm"
-          onkeydown="moverAlSiguienteCampo(event, 'horas1')"
-        />
-        <input
-          type="number"
-          id="horas1"
-          placeholder="Hs"
-          onkeydown="moverAlSiguienteCampo(event, 'descripcion1')"
-        />
-        <input
-        type="text"
-        id="descripcion1"
-        name="trabajos"
-        placeholder="Breve descripción del trabajo"
-        onkeydown="moverAlSiguienteCampo(event, 'plusButton1')"
-        autocomplete="on"
-        />
-        <input
-        type="checkbox"
-        id="checkbox1"
-        class="checkbox"
-        onkeydown="moverAlSiguienteCampo(event, 'plusButton1')"
-        />
-        <button onclick="insertarLinea(1)" id="plusButton1" class="plusButton">
-          +
-        </button>
-        <button onclick="eliminarLinea(1)" class="minusButton">-</button>
-      </div>
-    -->
       <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
     </div>
 
@@ -62,14 +32,23 @@
           </div>
         -->
         <div>
-          <button onclick="borrarDatos(claveTextoAbierto)" class="botonMenu botonLimpiar">Limpiar</button>
+          <button
+            id="botonLimpiar"
+            onclick="borrarDatos(claveTextoAbierto)"
+            class="botonMenu botonLimpiar"
+          >
+            Limpiar
+          </button>
         </div>
         <div>
-          <button onclick="compartir()" class="botonMenu">Compartir</button>
+          <button id="botonCompartir" onclick="compartir()" class="botonMenu">
+            Compartir
+          </button>
         </div>
       </div>
       <div class="tooltip">
         <button
+          id="botonRevisar"
           onclick="revisarArchivo()"
           onmouseover="revisarArchivo()"
           class="botonMenu"
@@ -86,7 +65,6 @@
         <span id="info" class="cajaBotones info"></span>
       </div>
     </div>
-    <script src="app.js"></script>
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
