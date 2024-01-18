@@ -17,25 +17,27 @@ const trabajoCompleto = " Completo.";
 const eventoMover = "Mover";
 const tagResumen = "\n\nResumen:\n";
 
-//window.onload(inicio);
+//window.onload = inicio;
 
 function inicio() {
-  document
-    .getElementById("operarios")
-    .onkeydown(moverAlSiguienteCampo(event, "ingresar"));
-  document
-    .getElementById("archivoInput")
-    .onkeydown(moverAlSiguienteCampo(event, "ingresar"));
-  document.getElementById("ingresar").onclick(ingresarConNombre);
-  document.getElementById("abrir").onclick(ingresarConArchivo);
-  document.getElementById("nuevaLinea").onclick(agregarLinea);
+  document.getElementById("operarios").onkeydown = moverAlSiguienteCampo(
+    event,
+    "ingresar"
+  );
+  document.getElementById("archivoInput").onkeydown = moverAlSiguienteCampo(
+    event,
+    "ingresar"
+  );
+  document.getElementById("ingresar").onclick = ingresarConNombre;
+  document.getElementById("abrir").onclick = ingresarConArchivo;
+  document.getElementById("nuevaLinea").onclick = agregarLinea;
   document
     .getElementById("botonLimpiar")
     .onclick(borrarDatos(claveTextoAbierto));
-  document.getElementById("botonCompartir").onclick(compartir);
-  document.getElementById("botonRevisar").onclick(revisarArchivo);
-  document.getElementById("botonRevisar").onmouseover(revisarArchivo);
-  
+  document.getElementById("botonCompartir").onclick = compartir;
+  document.getElementById("botonRevisar").onclick = revisarArchivo;
+  document.getElementById("botonRevisar").onmouseover = revisarArchivo;
+
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
@@ -108,7 +110,9 @@ function irAIngresoHoras(nombreEstampado) {
 
   localStorage.setItem(claveNombreOperario, nombreEstampado);
 
-  window.location.href = "horas.html";
+  //window.location.href = "horas.html";
+  document.getElementById("portada").style.display = "none";
+  document.getElementById("pagina2").style.display = "block";
 }
 
 function inicializarPagina2() {
