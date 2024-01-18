@@ -1,12 +1,21 @@
 /* Estilos generales */
 body {
   font-family: Arial, sans-serif;
+  font-size: 1.8em;
   line-height: 1.6;
   margin: 1em;
   padding: 0;
   width: 90%;
   font-size: larger;
   height: 100vh; /* Para asegurar que el body ocupe toda la altura de la ventana */
+}
+
+#portada {
+  display: block;
+}
+
+#pagina2 {
+  display: none;
 }
 
 h1,
@@ -51,9 +60,9 @@ input[type="date"] {
   min-width: 4em;
 }
 
-.ingresoIndex{
-width: 80%;
-max-width: 30em;
+.ingresoIndex {
+  width: 80%;
+  max-width: 30em;
 }
 
 .checkbox {
@@ -170,11 +179,11 @@ button:hover {
   margin: 1em;
 }
 
-.botonLimpiar{
+.botonLimpiar {
   background-color: #ff0000;
 }
 
-.botonLimpiar:hover{
+.botonLimpiar:hover {
   background-color: #ff5050;
 }
 

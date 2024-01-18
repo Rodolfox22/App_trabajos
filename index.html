@@ -8,34 +8,35 @@
     <link rel="icon" type="image/svg+xml" href="icono.svg" />
   </head>
   <body>
-    <div class="container">
-      <div id="logo" class="box">
-        <img src="logo.svg" />
-      </div>
-      <div id="operarios" class="box">
-        <input
-          type="text"
-          id="operario"
-          name="name"
-          class="ingresoIndex"
-          placeholder="Ingrese su nombre"
-          autocomplete="on"
-          onkeydown="moverAlSiguienteCampo(event, 'ingresar')"
-          required
-        />
-        <button id="ingresar" onclick="ingresarConNombre()">Ingresar</button>
-      </div>
-      <div id="archivo" class="box">
-        <label for="archivoInput">Abrir archivo existente</label>
-        <input
-          type="file"
-          id="archivoInput"
-          class="ingresoIndex"
-          onkeydown="moverAlSiguienteCampo(event, 'abrir')"
-        />
-        <button id="abrir" onclick="ingresarConArchivo()">Abrir</button>
-      </div>
-      <!--
+    <div id="portada">
+      <div class="container">
+        <div id="logo" class="box">
+          <img src="logo.svg" />
+        </div>
+        <div id="operarios" class="box">
+          <input
+            type="text"
+            id="operario"
+            name="name"
+            class="ingresoIndex"
+            placeholder="Ingrese su nombre"
+            autocomplete="on"
+            onkeydown="moverAlSiguienteCampo(event, 'ingresar')"
+            required
+          />
+          <button id="ingresar" onclick="ingresarConNombre()">Ingresar</button>
+        </div>
+        <div id="archivo" class="box">
+          <label for="archivoInput">Abrir archivo existente</label>
+          <input
+            type="file"
+            id="archivoInput"
+            class="ingresoIndex"
+            onkeydown="moverAlSiguienteCampo(event, 'abrir')"
+          />
+          <button id="abrir" onclick="ingresarConArchivo()">Abrir</button>
+        </div>
+        <!--
         <div id="archivoUnir" class="box">
           <label for="archivoAgregar">Abrir Varios Archivos</label>
         <input
@@ -50,24 +51,102 @@
             mismo nombre de operario
           </p>
         </div>
-      -->
+      --></div>
+      <script src="app.js"></script>
+      <script>
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker
+              .register("/service-worker.js")
+              .then((registration) => {
+                console.log(
+                  "Service Worker registrado con éxito:",
+                  registration
+                );
+              })
+              .catch((error) => {
+                console.log("Error al registrar el Service Worker:", error);
+              });
+          });
+        }
+      </script>
+      <script>
+        document.addEventListener("DOMContentLoaded", adquirirTextoArchivo);
+      </script>
     </div>
-    <script src="app.js"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-              console.log('Service Worker registrado con éxito:', registration);
-            })
-            .catch(error => {
-              console.log('Error al registrar el Service Worker:', error);
-            });
-        });
-      }
-    </script>
-    <script>
-      document.addEventListener("DOMContentLoaded", adquirirTextoArchivo);
-    </script>
+    <div id="pagina2">
+      <h1>Trabajos JLC</h1>
+      <div id="nombre"></div>
+      <div id="lineas">
+        <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
+      </div>
+
+      <div class="cajaBotones">
+        <div class="botonesContainer">
+          <div>
+            <button onclick="agregarLinea()" id="nuevaLinea" class="botonMenu">
+              Nuevo
+            </button>
+          </div>
+          <!--
+            <div>
+              <button onclick="generarArchivo()" class="botonMenu">Guardar</button>
+            </div>
+          -->
+          <div>
+            <button
+              id="botonLimpiar"
+              onclick="borrarDatos(claveTextoAbierto)"
+              class="botonMenu botonLimpiar"
+            >
+              Limpiar
+            </button>
+          </div>
+          <div>
+            <button id="botonCompartir" onclick="compartir()" class="botonMenu">
+              Compartir
+            </button>
+          </div>
+        </div>
+        <div class="tooltip">
+          <button
+            id="botonRevisar"
+            onclick="revisarArchivo()"
+            onmouseover="revisarArchivo()"
+            class="botonMenu"
+          >
+            Revisar
+          </button>
+          <span class="tooltiptext" id="tooltip">Todas las líneas válidas</span>
+        </div>
+        <div>
+          <ul id="resumen">
+            Para visualizar el resumen presione revisar
+          </ul>
+          <div id="tabla"></div>
+          <span id="info" class="cajaBotones info"></span>
+        </div>
+      </div>
+      <script>
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker
+              .register("/service-worker.js")
+              .then((registration) => {
+                console.log(
+                  "Service Worker registrado con éxito:",
+                  registration
+                );
+              })
+              .catch((error) => {
+                console.log("Error al registrar el Service Worker:", error);
+              });
+          });
+        }
+      </script>
+      <script>
+        document.addEventListener("DOMContentLoaded", inicializarPagina2);
+      </script>
+    </div>
   </body>
 </html>
