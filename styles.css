@@ -18,6 +18,26 @@ body {
   display: none;
 }
 
+#unir {
+  display: none;
+}
+
+#h2Drop {
+  display: none;
+}
+
+
+#fileDropArea {
+  display: flex;
+  border: 2px dashed #333;
+  width: 70%;
+  height: 30vh;
+  margin: 20px auto;
+  text-align: center;
+  padding: 10px;
+  background-color: #fff;
+}
+
 h1,
 h2 {
   text-align: center;

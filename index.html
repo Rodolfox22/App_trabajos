@@ -10,7 +10,7 @@
   <body>
     <div id="portada">
       <div class="container">
-        <div id="logo" class="box">
+        <div id="logo" class="box" onclick="pegarArchivos()">
           <img src="logo.svg" />
         </div>
         <div id="operarios" class="box">
@@ -36,22 +36,13 @@
           />
           <button id="abrir" onclick="ingresarConArchivo()">Abrir</button>
         </div>
-        <!--
-        <div id="archivoUnir" class="box">
-          <label for="archivoAgregar">Abrir Varios Archivos</label>
-        <input
-          type="file"
-          id="archivoAgregar"
-          class="ingresoIndex"
-          onkeydown="moverAlSiguienteCampo(event, 'agregar')"
-          />
-          <button id="agregar" onclick="ingresarConArchivo()">Agregar</button>
-          <p class="info">
-            Los archivos ingresados en este apartado serán todos guardados con el
-            mismo nombre de operario
-          </p>
+        <div id="unir">
+          <div id="fileDropArea">Suelta archivos aquí para unirlos</div>
+          <h2 id="h2Drop">Archivos seleccionados:</h2>
+          <ul id="files"></ul>
+          <button id="volver" onclick="restaurar()">Volver</button>
         </div>
-      --></div>
+      </div>
       <script src="app.js"></script>
       <script>
         if ("serviceWorker" in navigator) {
@@ -143,9 +134,6 @@
               });
           });
         }
-      </script>
-      <script>
-        document.addEventListener("DOMContentLoaded", inicializarPagina2);
       </script>
     </div>
   </body>

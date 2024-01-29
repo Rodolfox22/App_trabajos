@@ -9,6 +9,7 @@ let operarioActivo = "";
 let noNombreOperario = "Trabajos";
 
 let textoAbierto = "";
+let textoCompleto = "";
 let archivoAgregar = "";
 const claveTextoAbierto = "textoAbierto";
 const claveNombreOperario = "nombreOperario";
@@ -19,6 +20,8 @@ const tagResumen = "\n\nResumen:\n";
 
 //window.onload = inicio;
 
+//TODO: investigar si los eventos están ingresados de manera correcta
+//TODO: investigar porque cuando actualizo la pagina y ingreso datos nuevos, me mantiene los datos ateriores, tengo que entrar 2 veces para cambiar el nombre o el archivo guardado
 function inicio() {
   document.getElementById("operarios").onkeydown = moverAlSiguienteCampo(
     event,
@@ -56,17 +59,55 @@ function inicio() {
 
 function crearNuevaLineaHTML(lineaActual) {
   return `
-    <div id="linea${lineaActual}">
-      <label for="fecha${lineaActual}">${lineaActual}. </label>
-      <input type="date" id="fecha${lineaActual}" placeholder="dd-mm"  onkeydown="moverAlSiguienteCampo(event, 'horas${lineaActual}')">
-      <input type="number" id="horas${lineaActual}" placeholder="Hs"  onkeydown="moverAlSiguienteCampo(event, 'descripcion${lineaActual}')">
-      <input type="text" id="descripcion${lineaActual}" name= "trabajos" placeholder="Breve descripción del trabajo" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')" autocomplete="on">
-      <input type="checkbox" id="checkbox${lineaActual}" class="checkbox" onkeydown="moverAlSiguienteCampo(event, 'plusButton${lineaActual}')">
-      <button onclick="insertarLinea(${lineaActual})" id= 'plusButton${lineaActual}' class="plusButton"> + </button>
-      <button onclick="eliminarLinea(${lineaActual})" class="minusButton"> - </button>
-    </div>
-  `;
+      <div id="linea${lineaActual}">
+        <label for="fecha${lineaActual}">${lineaActual}. </label>
+        <input type="date" id="fecha${lineaActual}" placeholder="dd-mm">
+        <input type="number" id="horas${lineaActual}" placeholder="Hs">
+        <input type="text" id="descripcion${lineaActual}" name="trabajos" placeholder="Breve descripción del trabajo" autocomplete="on">
+        <input type="checkbox" id="checkbox${lineaActual}" class="checkbox">
+        <button id="plusButton${lineaActual}" class="plusButton"> + </button>
+        <button id="minusButton${lineaActual}" class="minusButton"> - </button>
+      </div>
+    `;
 }
+
+// Agregar eventos después de crear la línea
+function agregarEventos(lineaActual) {
+  const plusButton = document.getElementById(`plusButton${lineaActual}`);
+  plusButton.addEventListener("click", () => insertarLinea(lineaActual));
+
+  const minusButton = document.getElementById(`minusButton${lineaActual}`);
+  minusButton.addEventListener("click", () => eliminarLinea(lineaActual));
+
+  const fecha = document.getElementById(`fecha${lineaActual}`);
+  fecha.addEventListener("keydown", (event) =>
+    moverAlSiguienteCampo(event, `horas${lineaActual}`)
+  );
+
+  const horas = document.getElementById(`horas${lineaActual}`);
+  horas.addEventListener("keydown", (event) =>
+    moverAlSiguienteCampo(event, `descripcion${lineaActual}`)
+  );
+
+  const descripcion = document.getElementById(`descripcion${lineaActual}`);
+  descripcion.addEventListener("keydown", (event) =>
+    moverAlSiguienteCampo(event, `plusButton${lineaActual}`)
+  );
+
+  const check = document.getElementById(`checkbox${lineaActual}`);
+  check.addEventListener("keydown", (event) =>
+    moverAlSiguienteCampo(event, `plusButton${lineaActual}`)
+  );
+
+}
+
+// Ejemplo de cómo usar estas funciones
+//const nuevaLinea = crearNuevaLineaHTML(1);
+// Agregar la nueva línea al DOM (supongamos que existe un contenedor con id "contenedor")
+//document.getElementById('contenedor').innerHTML += nuevaLinea;
+
+// Agregar eventos a la nueva línea
+//agregarEventos(1);
 
 function ingresarConNombre() {
   const datos = localStorage.getItem(claveTextoAbierto);
@@ -93,7 +134,7 @@ function alertaNombre(nombreOperario) {
     return;
   }
 
-  const textoIngresado = window.prompt("Ingresar nombre:").trim();
+  const textoIngresado = consulta("Ingresar nombre:");
 
   if (textoIngresado !== null && textoIngresado !== "") {
     //console.log(`Nombre: ${textoIngresado}`);
@@ -113,6 +154,7 @@ function irAIngresoHoras(nombreEstampado) {
   //window.location.href = "horas.html";
   document.getElementById("portada").style.display = "none";
   document.getElementById("pagina2").style.display = "block";
+  inicializarPagina2();
 }
 
 function inicializarPagina2() {
@@ -167,6 +209,7 @@ function agregarLinea() {
     "beforeend",
     crearNuevaLineaHTML(contadorLineas)
   );
+  agregarEventos(contadorLineas);
 
   const nuevoCampoId = `fecha${contadorLineas}`;
   moverAlSiguienteCampo(eventoMover, nuevoCampoId);
@@ -182,6 +225,7 @@ function insertarLinea(numeroLinea) {
     "afterend",
     crearNuevaLineaHTML(contadorLineas)
   );
+  agregarEventos(contadorLineas);
 
   const nuevoCampoId = `fecha${contadorLineas}`;
   moverAlSiguienteCampo(eventoMover, nuevoCampoId);
@@ -574,15 +618,139 @@ function copiartexto() {
     });
 }
 
-function borrarDatos(dato, recargar = true) {
-  const borrando = confirm("¿Desea borrar los datos guardados?");
+//TODO: revisar si esta es la forma correcta de ingresar datos predeterminados, creo que js tiene una forma mejor de cargar los datos por defecto
+//TODO: mejorar funcion para que sea mas correcta
+function borrarDatos(dato = "sesion", recargar = true) {
+  let borrando = true;
+
+  if (dato != "sesion") {
+    borrando = confirmacion("¿Desea borrar los datos guardados?");
+  }
+
   if (borrando) {
     localStorage.setItem(dato, "");
-    alert("Datos borrados con éxito.");
+    if (dato != "sesion") {
+      mensaje("Datos borrados con éxito.");
+    }
     if (recargar) {
       window.location.href = window.location.href;
       return;
     }
     console.log("No se recargó la pagina");
   }
+}
+
+function pegarArchivos() {
+  console.log("Ver recuadro");
+  const pass = consulta("Ingrese contraseña: ");
+  if (pass != "Polos") {
+    mensaje("Contraseña incorrecta");
+    return;
+  }
+  mensaje("Contraseña correcta, bienvenido admin");
+  const cuentas = { archivosError: 0, archivosOk: 0 };
+  document.getElementById("operarios").style.display = "none";
+  document.getElementById("archivo").style.display = "none";
+  document.getElementById("unir").style.display = "grid";
+
+  const fileDropArea = document.getElementById("fileDropArea");
+  const fileList = document.getElementById("files");
+
+  // Agrega un manejador de eventos para evitar que el navegador abra los archivos al arrastrarlos
+  fileDropArea.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+
+  // Agrega un manejador de eventos para manejar el evento "drop"
+  fileDropArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    document.getElementById("h2Drop").style.display = "flex";
+    document.getElementById("fileDropArea").style.display = "none";
+
+    // Recorre los archivos y muestra sus nombres en la lista
+    for (const file of files) {
+      const listItem = document.createElement("li");
+      listItem.textContent = file.name;
+      fileList.appendChild(listItem);
+
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const contenido = e.target.result;
+        //console.log("Trabajos:", contenido.split(tagResumen)[0]);
+        const filtrado = contenido.split(tagResumen);
+        if (filtrado.length == 2) {
+          console.log("Correcto!");
+          textoCompleto += filtrado[0] + "\n";
+        } else {
+          console.log("Que pato");
+          cuentas.archivosError += 1;
+        }
+        //console.log(textoCompleto);
+        // Aquí puedes hacer lo que quieras con el contenido del archivo
+      };
+
+      reader.readAsText(file);
+    }
+    const error = document.createElement("li");
+    error.textContent = `Se encontraron ${cuentas.archivosError} archivos no compatibles`;
+    fileList.appendChild(error);
+  });
+}
+
+function restaurar() {
+  console.log("Restaurar");
+  /*document.getElementById("operarios").style.display = null;
+  document.getElementById("archivo").style.display = null;
+  document.getElementById("unir").style.display = null;
+  document.getElementById("pagina2").style.display = null;
+  document.getElementById("fileDropArea").style.display = null;
+  document.getElementById("h2Drop").style.display = null;*/
+  console.log("Trabajos:", textoCompleto);
+  copiarTodo(textoCompleto);
+  textoCompleto = "";
+  borrarDatos();
+}
+
+function copiarTodo(textoACopiar) {
+  // Usar la API Clipboard para copiar el contenido
+  navigator.clipboard
+    .writeText(textoACopiar)
+    .then(function () {
+      // Mostrar mensaje de éxito
+      mensaje("Texto copiado correctamente");
+    })
+    .catch(function (err) {
+      // Mostrar mensaje de error si no se pudo copiar
+      console.error("Error al copiar el texto:", err);
+    });
+}
+
+//TODO: analizar la forma de agregar un archivo externo para facilitar la lectura del programa
+function mensaje(textoMensaje) {
+  //TODO: mostrar la ventana de información para indicar un mensaje
+  //TODO: agregar evntos para que si hace click fuera de la ventana pueda salir
+  //TODO: investigar si es posible desactibar los eventos, para que una vez que salga de la ventana, no puedan utilizarse mas esos eventos inicializados
+  alert(textoMensaje);
+}
+
+function confirmacion(textoConfirm) {
+  //TODO: utilizando la misma ventana, preguntamos al usuario
+  return confirm(textoConfirm);
+}
+
+function consulta(textoConsulta, pass = false) {
+  //TODO: como se ingresan valores predeterminados a una funcion en js?, es correcto lo que estoy haciendo de ingresar el valor predeterminado en la parte de variables? que forma es la correcta de ingresar valores?
+  //TODO: utiliza la ventana para el ingreso de datos
+  return prompt(textoConsulta).trim();
+}
+
+function abrirVentana(modo) {
+  //TODO: activación de la ventana
+  //TODO: logica para la creacion de botones
+}
+
+function comprobarPass(params) {
+  //TODO: es necesario que yo utilice una cuncion solo para este uso?
 }
