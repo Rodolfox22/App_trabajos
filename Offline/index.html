@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Horas JLC</title>
+    <style>
+      /* Estilos generales */
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 1.8em;
+        line-height: 1.6;
+        margin: 1em;
+        padding: 0;
+        width: 90%;
+        font-size: larger;
+        height: 100vh; /* Para asegurar que el body ocupe toda la altura de la ventana */
+      }
+
+      #portada {
+        display: block;
+      }
+
+      #pagina2 {
+        display: none;
+      }
+
+      #unir {
+        display: none;
+      }
+
+      #h2Drop {
+        display: none;
+      }
+
+      #fileDropArea {
+        display: flex;
+        border: 2px dashed #333;
+        width: 70%;
+        height: 30vh;
+        margin: 20px auto;
+        text-align: center;
+        padding: 10px;
+        background-color: #fff;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+      }
+
+      /* Estilos para los contenedores de las líneas */
+      #lineas {
+        margin-bottom: 2em;
+      }
+
+      /* Estilos para las líneas */
+      #lineas div {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1em;
+      }
+
+      /* Estilos para los campos de entrada */
+      input {
+        flex: 1;
+        padding: 0.2em;
+        border: 0.1em solid #ccc;
+        border-radius: 0.3em;
+        min-height: 2em;
+        margin-left: 0.7em;
+        min-width: 2em;
+      }
+
+      input[type="text"] {
+        height: fit-content;
+        overflow: visible;
+      }
+
+      input[type="number"] {
+        max-width: 3em;
+      }
+
+      input[type="date"] {
+        max-width: 6em;
+        min-width: 4em;
+      }
+
+      .ingresoIndex {
+        width: 80%;
+        max-width: 30em;
+      }
+
+      .checkbox {
+        min-width: 1.5em;
+        max-width: 1.5em;
+        margin-right: 1em;
+      }
+
+      /* Estilos para los botones */
+      button {
+        cursor: pointer;
+        margin-left: 0.7em;
+        padding: 0.5em 1em;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 0.4em;
+        width: 7em;
+        height: 3em;
+      }
+
+      .minusButton,
+      .plusButton {
+        width: 2.5em;
+        height: 2.5em;
+      }
+
+      button:hover {
+        background-color: #0089b3;
+      }
+
+      .minusButton {
+        background-color: #ff0000;
+      }
+
+      .minusButton:hover {
+        background-color: #ff5050;
+      }
+
+      .tooltip {
+        position: relative;
+      }
+
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 10em;
+        background-color: #007bff;
+        color: #fff;
+        text-align: center;
+        border-radius: 0.5em;
+        padding: 0.5em;
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.7s;
+      }
+
+      .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -0.5em;
+        border-width: 0.5em;
+        border-style: solid;
+        border-color: #007bff transparent transparent transparent;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .container {
+        display: grid;
+        /*grid-template-rows: 25% auto;*/
+        gap: 0.1em;
+        margin: 0.5em;
+        justify-content: center;
+        width: auto;
+      }
+
+      .box {
+        border: 0.1em solid #ccc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 0.5em;
+        margin: 1em;
+        border-radius: 0.5em;
+        padding: 1em;
+        max-width: 90%;
+        min-width: 16em;
+      }
+
+      .cajaBotones {
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .botonesContainer {
+        display: flex;
+      }
+
+      .botonMenu {
+        padding: 1em 1em;
+        margin: 1em;
+      }
+
+      .botonLimpiar {
+        background-color: #ff0000;
+      }
+
+      .botonLimpiar:hover {
+        background-color: #ff5050;
+      }
+
+      table,
+      .descripcionTabla {
+        border: 0.1em solid #ccc;
+        border-radius: 0.5em;
+        padding: 0.2em 0.2em;
+        text-align: center;
+      }
+
+      .divCopiar {
+        cursor: grab;
+        padding: 0.5em;
+        text-align: right;
+        text-decoration: none; /* Quita la subrayado predeterminado */
+        color: #3498db; /* Color del texto del enlace */
+        font-weight: bold; /* Texto en negrita */
+        transition: color 0.3s ease; /* Transición suave del color */
+        font-size: 0.7em;
+        text-align: right;
+      }
+
+      th {
+        padding: 0.3em;
+      }
+
+      .info {
+        margin-top: 1.5em;
+        font-size: medium;
+      }
+
+      #logo {
+        border-color: rgba(0, 0, 0, 0);
+        gap: 0em;
+        padding: 0em;
+      }
+
+      /* Cambio de color al pasar el mouse por encima */
+      a:hover {
+        color: #e74c3c; /* Color diferente al pasar el mouse por encima */
+      }
+
+      /* Estilo opcional para cuando el enlace está visitado */
+      a:visited {
+        color: #3498db; /* Color del texto del enlace visitado */
+      }
+    </style>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Crect width='100%25' height='100%25' fill='rgba(0, 0, 255, 0.0)'/%3E%3Ctext x='47%25' y='50%25' font-size='16' font-family='Arial, sans-serif' font-weight='bold' fill='red' text-anchor='middle' dy='.3em'%3EJLC%3C/text%3E%3C/svg%3E"
+      type="image/svg+xml"
+    />
+    <script>
+      let contadorLineas = 1;
+      let textoArchivo = "";
+      let textoMuestraHTML = "";
+      let textoResumen = "";
+      let horasPorFecha = {};
+      let horasPorFechaArray = [];
+
+      let operarioActivo = "";
+      let noNombreOperario = "Trabajos";
+
+      let textoAbierto = "";
+      let textoCompleto = "";
+      let archivoAgregar = "";
+      const claveTextoAbierto = "textoAbierto";
+      const claveNombreOperario = "nombreOperario";
+      const claveNombreArchivo = "nombreArchivo";
+      const trabajoCompleto = " Completo.";
+      const eventoMover = "Mover";
+      const tagResumen = "\n\nResumen:\n";
+
+      window.onload = eventosDeInicio;
+
+      function eventosDeInicio() {
+        const operario = document.getElementById("operario");
+        operario.addEventListener("keydown", (event) =>
+          moverAlSiguienteCampo(event, "ingresar")
+        );
+        operario.focus();
+
+        document
+          .getElementById("logo")
+          .addEventListener("click", pegarArchivos);
+
+        document
+          .getElementById("ingresar")
+          .addEventListener("click", ingresarConNombre);
+
+        document
+          .getElementById("archivoInput")
+          .addEventListener("keydown", (event) =>
+            moverAlSiguienteCampo(event, "abrir")
+          );
+
+        document
+          .getElementById("abrir")
+          .addEventListener("click", ingresarConArchivo);
+
+        document.getElementById("volver").addEventListener("click", restaurar);
+
+        document
+          .getElementById("nuevaLinea")
+          .addEventListener("click", agregarLinea);
+
+        document
+          .getElementById("botonLimpiar")
+          .addEventListener("click", () => borrarDatos(claveTextoAbierto));
+
+        document
+          .getElementById("botonCompartir")
+          .addEventListener("click", compartir);
+
+        document
+          .getElementById("botonRevisar")
+          .addEventListener("click", revisarArchivo);
+
+        document
+          .getElementById("botonRevisar")
+          .addEventListener("mouseover", revisarArchivo);
+
+        document.addEventListener("keydown", (e) => {
+          //console.log(e);
+          if (e.altKey && e.key == "a") {
+            ingresarConArchivo();
+          }
+
+          if (e.ctrlKey && e.key == "ArrowRight") {
+            pegarArchivos();
+          }
+        });
+
+        adquirirTextoArchivo();
+
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker
+              .register("/service-worker.js")
+              .then((registration) => {
+                console.log(
+                  "Service Worker registrado con éxito:",
+                  registration
+                );
+              })
+              .catch((error) => {
+                console.log("Error al registrar el Service Worker:", error);
+              });
+          });
+        }
+      }
+
+      function crearNuevaLineaHTML(lineaActual) {
+        return `
+            <div id="linea${lineaActual}">
+              <label for="fecha${lineaActual}">${lineaActual}. </label>
+              <input type="date" id="fecha${lineaActual}" placeholder="dd-mm">
+              <input type="number" id="horas${lineaActual}" placeholder="Hs">
+              <input type="text" id="descripcion${lineaActual}" name="trabajos" placeholder="Breve descripción del trabajo" autocomplete="on">
+              <input type="checkbox" id="checkbox${lineaActual}" class="checkbox">
+              <button id="plusButton${lineaActual}" class="plusButton"> + </button>
+              <button id="minusButton${lineaActual}" class="minusButton"> - </button>
+            </div>
+          `;
+      }
+
+      // Agregar eventos después de crear la línea
+      function agregarEventos(lineaActual) {
+        const plusButton = document.getElementById(`plusButton${lineaActual}`);
+        plusButton.addEventListener("click", () => insertarLinea(lineaActual));
+
+        const minusButton = document.getElementById(
+          `minusButton${lineaActual}`
+        );
+        minusButton.addEventListener("click", () => eliminarLinea(lineaActual));
+
+        const fecha = document.getElementById(`fecha${lineaActual}`);
+        fecha.addEventListener("keydown", (event) =>
+          moverAlSiguienteCampo(event, `horas${lineaActual}`)
+        );
+
+        const horas = document.getElementById(`horas${lineaActual}`);
+        horas.addEventListener("keydown", (event) =>
+          moverAlSiguienteCampo(event, `descripcion${lineaActual}`)
+        );
+
+        const descripcion = document.getElementById(
+          `descripcion${lineaActual}`
+        );
+        descripcion.addEventListener("keydown", (event) =>
+          moverAlSiguienteCampo(event, `plusButton${lineaActual}`)
+        );
+
+        const check = document.getElementById(`checkbox${lineaActual}`);
+        check.addEventListener("keydown", (event) =>
+          moverAlSiguienteCampo(event, `plusButton${lineaActual}`)
+        );
+      }
+
+      function ingresarConNombre() {
+        const datos = localStorage.getItem(claveTextoAbierto);
+        const operarioInput = document.getElementById("operario");
+        alertaNombre(operarioInput.value);
+        if (datos !== "") {
+          borrarDatos(claveTextoAbierto, false);
+        }
+      }
+
+      function ingresarConArchivo() {
+        const nombreOperario = localStorage
+          .getItem(claveTextoAbierto)
+          .split("\n")[0]
+          .split("\t")[3];
+        //console.log(`Nombre: ${nombreOperario}`);
+
+        alertaNombre(nombreOperario);
+      }
+
+      function alertaNombre(nombreOperario) {
+        if (nombreOperario !== "" && nombreOperario !== "undefined") {
+          irAIngresoHoras(nombreOperario);
+          return;
+        }
+
+        const textoIngresado = consulta("Ingresar nombre:");
+
+        if (textoIngresado !== null && textoIngresado !== "") {
+          //console.log(`Nombre: ${textoIngresado}`);
+          irAIngresoHoras(textoIngresado);
+          return;
+        }
+
+        //console.log("El usuario canceló el ingreso.");
+        return;
+      }
+
+      function irAIngresoHoras(nombreEstampado) {
+        nombreEstampado = formatoNombre(nombreEstampado);
+
+        localStorage.setItem(claveNombreOperario, nombreEstampado);
+
+        //window.location.href = "horas.html";
+        document.getElementById("portada").style.display = "none";
+        document.getElementById("pagina2").style.display = "block";
+        inicializarPagina2();
+      }
+
+      function eventosPagina2() {
+        document.addEventListener("keydown", function (e) {
+          if (e.altKey && e.key == "n") {
+            agregarLinea();
+          }
+
+          if (e.altKey && e.key == "l") {
+            borrarDatos(claveTextoAbierto);
+          }
+
+          if (e.altKey && e.key == "c") {
+            compartir();
+          }
+
+          if (e.altKey && e.key == "r") {
+            revisarArchivo();
+          }
+        });
+      }
+
+      function inicializarPagina2() {
+        eventosPagina2();
+        insertarNombre();
+        agregarLinea();
+        insertarFecha("fecha1");
+        textoAbierto = localStorage.getItem(claveTextoAbierto);
+
+        if (textoAbierto !== "") {
+          const imprimirNombreArchivo =
+            localStorage.getItem(claveNombreArchivo);
+          //console.log("Completando campos");
+          insertarElementos();
+          if (imprimirNombreArchivo !== null) {
+            imprimirInfo(`El archivo abierto es: ${imprimirNombreArchivo}`);
+          }
+          return;
+        }
+      }
+
+      function insertarNombre() {
+        let nombreOperario = formatoNombre(
+          localStorage.getItem(claveNombreOperario)
+        );
+
+        if (nombreOperario === "undefined") {
+          nombreOperario = noNombreOperario;
+        }
+
+        const lineaNombre = document.getElementById("nombre");
+
+        const insertarLineaNombre = `<h2>${nombreOperario}</h2>`;
+
+        if (nombreOperario !== noNombreOperario) {
+          lineaNombre.insertAdjacentHTML("beforeend", insertarLineaNombre);
+        }
+
+        operarioActivo = nombreOperario;
+      }
+
+      function formatoNombre(nombreInsertado) {
+        //console.log("Formatear nombre");
+        const nombreFiltrado = nombreInsertado.split(" ")[0].trim();
+
+        return (
+          nombreFiltrado.charAt(0).toUpperCase() +
+          nombreFiltrado.slice(1).toLowerCase()
+        );
+      }
+
+      function agregarLinea() {
+        const lineasDiv = document.getElementById("lineas");
+
+        lineasDiv.insertAdjacentHTML(
+          "beforeend",
+          crearNuevaLineaHTML(contadorLineas)
+        );
+        agregarEventos(contadorLineas);
+
+        const nuevoCampoId = `fecha${contadorLineas}`;
+        moverAlSiguienteCampo(eventoMover, nuevoCampoId);
+        imprimirInfo(`Fue agregada la línea ${contadorLineas}`);
+
+        contadorLineas++;
+        revisarArchivo();
+      }
+
+      function insertarLinea(numeroLinea) {
+        const lineaActual = document.getElementById(`linea${numeroLinea}`);
+        lineaActual.insertAdjacentHTML(
+          "afterend",
+          crearNuevaLineaHTML(contadorLineas)
+        );
+        agregarEventos(contadorLineas);
+
+        const nuevoCampoId = `fecha${contadorLineas}`;
+        moverAlSiguienteCampo(eventoMover, nuevoCampoId);
+        imprimirInfo(`Fue insertada la línea ${contadorLineas}`);
+
+        contadorLineas++;
+        revisarArchivo();
+      }
+
+      function eliminarLinea(numeroLinea) {
+        const linea = document.getElementById(`linea${numeroLinea}`);
+        linea.remove();
+
+        moverAlSiguienteCampo(eventoMover, "nuevaLinea");
+        imprimirInfo(`La linea ${numeroLinea} fue eliminada`);
+      }
+
+      function revisarArchivo() {
+        //console.log("Revisando archivo");
+        const lineasDiv = document.getElementById("lineas");
+        const lineasInputs = lineasDiv.getElementsByTagName("input");
+
+        textoArchivo = "";
+        textoMuestraHTML = "";
+        textoResumen = "";
+        horasPorFecha = {};
+
+        let lineasincompletas = [];
+        let fechaAnterior = "";
+        const largoLineas = lineasInputs.length;
+
+        for (let i = 0; i < largoLineas; i += 4) {
+          let fecha = lineasInputs[i].value.trim();
+          const horas = lineasInputs[i + 1].value.trim();
+          const descripcion = lineasInputs[i + 2].value.trim();
+          const isChecked = lineasInputs[i + 3].checked;
+
+          if (fecha === "") {
+            fecha = fechaAnterior;
+          }
+
+          const fechaFiltrada = procesarFecha(fecha);
+
+          /*Comprovacion */
+          if (horas !== "" || descripcion !== "") {
+            if (i) {
+              textoArchivo += "\n";
+            }
+
+            generarTextoFilas(fechaFiltrada, horas, descripcion, isChecked);
+            generarTextoHTML(fechaFiltrada, horas, descripcion, isChecked);
+          } else {
+            lineasincompletas.push(lineasInputs[i].id.slice(5));
+          }
+          actualizarResumen(fechaFiltrada, horas);
+          fechaAnterior = fecha;
+        }
+
+        /*Generar resumen de horas*/
+        horasPorFechaArray = Object.entries(horasPorFecha).map(
+          ([fecha, horas]) => `${fecha}: ${horas} hs.`
+        );
+
+        /*Burbuja de comprobacion */
+        const tooltipText =
+          lineasincompletas.length > 0
+            ? `Líneas incompletas: ${lineasincompletas.join(", ")}`
+            : "Comprobación correcta";
+
+        const tooltip = document.getElementById("tooltip");
+        tooltip.innerHTML = tooltipText;
+
+        /*Visualizo resumen y tabla de trabajos*/
+        verResumen();
+        verTabla();
+        //console.log(textoArchivo.length);
+        if (textoArchivo != "") {
+          localStorage.setItem(claveTextoAbierto, textoArchivo);
+        }
+      }
+
+      function generarTextoFilas(columna1, columna2, columna3, terminado) {
+        let operario = operarioActivo;
+        let completo = "";
+        let parametro2 = parseFloat(columna2)
+          .toLocaleString("es-ES")
+          .toString();
+
+        if (parametro2 === "NaN") {
+          parametro2 = "";
+          //console.log(parametro2);
+        }
+
+        if (operarioActivo === noNombreOperario) {
+          operario = "";
+        }
+
+        if (terminado) {
+          completo = trabajoCompleto;
+          //console.log("Trabajo completo");
+        }
+
+        textoArchivo += `${columna1}\t${parametro2}\t${columna3}${completo}\t${operario}`;
+      }
+
+      function generarTextoHTML(columna1, columna2, columna3, terminado) {
+        let completo = "";
+
+        if (operarioActivo === noNombreOperario) {
+          operario = "";
+        }
+
+        if (terminado) {
+          completo = trabajoCompleto;
+        }
+
+        textoMuestraHTML += `<tr>   <td>${columna1}</td>   <td>${columna2}</td>   <td class="descripcionTabla">${columna3} ${completo}</td>   </tr>`;
+      }
+
+      function actualizarResumen(fechaResumen, horasResumen) {
+        let horasS = parseFloat(horasResumen);
+        if (isNaN(horasS) || horasS == 0) {
+          //console.log("Campo de horas en 0");
+          return;
+        }
+
+        if (horasPorFecha[fechaResumen]) {
+          horasPorFecha[fechaResumen] += horasS;
+        } else {
+          horasPorFecha[fechaResumen] = horasS;
+        }
+      }
+
+      function generarArchivo() {
+        revisarArchivo();
+        agregarResumen();
+        descargarArchivo();
+      }
+
+      function descargarArchivo() {
+        const blob = new Blob([textoArchivo], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const fechaHoy = obtenerFechaActual();
+
+        a.href = url;
+        a.download = `${operarioActivo} ${fechaHoy}.txt`;
+        a.click();
+
+        URL.revokeObjectURL(url);
+        imprimirInfo("Archivo guardado en memoria");
+        borrarDatos(claveTextoAbierto);
+      }
+
+      function verTabla() {
+        const copiar =
+          '<div class="divCopiar"><a onclick="copiartexto()">[Copiar]</a></div>';
+        const encabezadoTrabajos =
+          "<table><thead>   <tr>   <th>Fecha</th>   <th>Hs</th>   <th>Descripcion</th>   </tr>   </thead>   <tbody>";
+        const pieTrabajos = "</tbody></table>";
+
+        let textoTablaHTML = "";
+        textoTablaHTML += encabezadoTrabajos;
+        textoTablaHTML += textoMuestraHTML;
+        textoTablaHTML += pieTrabajos;
+        textoTablaHTML += copiar;
+
+        const spanTabla = document.getElementById("tabla");
+        spanTabla.innerHTML = textoTablaHTML;
+      }
+
+      function verResumen() {
+        const encabezadoResumen = "<strong>Resumen:</strong><li>";
+        const pieResumen = "</li>";
+        let textoResumenHTML = "";
+
+        textoResumenHTML = encabezadoResumen;
+        textoResumenHTML += horasPorFechaArray.join("</li><li>");
+        textoResumenHTML += pieResumen;
+
+        const spanResumen = document.getElementById("resumen");
+        spanResumen.innerHTML = textoResumenHTML;
+      }
+
+      function agregarResumen() {
+        textoArchivo += tagResumen + horasPorFechaArray.join("\n");
+      }
+
+      function adquirirTextoArchivo() {
+        const fileInput = document.getElementById("archivoInput");
+
+        fileInput.addEventListener("change", function (event) {
+          let file = event.target.files[0];
+          let reader = new FileReader();
+          let nombreArchivo = "Continua edición actual";
+
+          if (file) {
+            nombreArchivo = file.name;
+          }
+
+          reader.onload = function (event) {
+            let fileContent = event.target.result.trim();
+            localStorage.setItem(claveTextoAbierto, fileContent);
+          };
+
+          reader.readAsText(file);
+          localStorage.setItem(claveNombreArchivo, nombreArchivo);
+        });
+      }
+
+      function insertarElementos() {
+        const seccion = textoAbierto.split(tagResumen);
+        const lineasAInsertar = seccion[0].split("\n");
+        for (let index = 0; index < lineasAInsertar.length; index++) {
+          const largoElemento = lineasAInsertar[index].length;
+          const elemento = lineasAInsertar[index].split("\t");
+          let fecha = elemento[0];
+          const horas = elemento[1];
+          const descripcion = elemento[2];
+
+          if (largoElemento) {
+            insertarFecha(`fecha${contadorLineas - 1}`, fecha);
+            insertarNumero(`horas${contadorLineas - 1}`, horas);
+            insertarTexto(`descripcion${contadorLineas - 1}`, descripcion);
+
+            agregarLinea();
+          }
+        }
+      }
+
+      function insertarTexto(elemento, texto) {
+        const campoInput = document.getElementById(elemento);
+
+        if (texto === undefined) {
+          return;
+        }
+
+        if (texto.endsWith(trabajoCompleto)) {
+          const checkbox = document.getElementById(
+            `checkbox${contadorLineas - 1}`
+          );
+          checkbox.checked = true;
+          const indiceCompleto = texto.indexOf(trabajoCompleto);
+          texto = texto.slice(0, indiceCompleto).trim();
+        }
+
+        campoInput.value = texto;
+      }
+
+      function insertarNumero(elemento, numero) {
+        const campoInput = document.getElementById(elemento);
+        if (numero === undefined) {
+          return;
+        }
+        numero = numero.replace(",", ".");
+        const numeroIngresado = parseFloat(numero);
+
+        campoInput.value = isNaN(numeroIngresado) ? null : numeroIngresado;
+      }
+
+      function compartir() {
+        revisarArchivo();
+        agregarResumen();
+        compartirPor();
+      }
+
+      function compartirPor() {
+        // Crea un Blob con el contenido
+        const blob = new Blob([textoArchivo], { type: "text/plain" });
+        const fechaHoy = obtenerFechaActual();
+
+        // Crea un objeto File a partir del Blob
+        const archivo = new File([blob], `${operarioActivo} ${fechaHoy}.txt`, {
+          type: "text/plain",
+        });
+
+        // Verifica si el navegador soporta la API de Web Share
+        if (navigator.share) {
+          navigator
+            .share({
+              files: [archivo],
+            })
+            .then(() => {
+              //console.log("Archivo compartido exitosamente.");
+              imprimirInfo("Archivo compartido exitosamente.");
+            })
+            .catch((error) => {
+              console.error("Error al compartir el archivo: ", error);
+              imprimirInfo(`Error al compartir el archivo: ${error}`);
+              return;
+            });
+        } else {
+          //console.log("La API de Web Share no está soportada en este navegador.");
+          imprimirInfo(
+            "La API de Web Share no está soportada en este navegador."
+          );
+          return;
+        }
+        borrarDatos(claveTextoAbierto);
+      }
+
+      function moverAlSiguienteCampo(evento, siguienteCampoId) {
+        if (evento.key === "Enter") {
+          evento.preventDefault();
+          document.getElementById(siguienteCampoId).focus();
+
+          if (siguienteCampoId == "ingresar") {
+            ingresarConNombre();
+          }
+
+          if (siguienteCampoId == "abrir") {
+            ingresarConArchivo();
+          }
+        }
+
+        if (evento === eventoMover) {
+          document.getElementById(siguienteCampoId).focus();
+        }
+      }
+
+      function procesarFecha(fechaActual) {
+        //yyyy-mm-dd
+        const dia = fechaActual.slice(8);
+        const mes = fechaActual.slice(5, 7);
+        const fechaFormateada = dia + "-" + mes;
+
+        return fechaFormateada;
+      }
+
+      function insertarFecha(elemento, fechaActual = "") {
+        const campoFecha = document.getElementById(elemento);
+        //console.log("Insertar fecha");
+
+        if (fechaActual === "") {
+          //console.log("Nueva fecha");
+          fechaActual = obtenerFechaActual("en-EN");
+        } else {
+          const anioNuevo = new Date();
+          //dd-mm
+          const dia = fechaActual.slice(0, 2);
+          const mes = fechaActual.slice(3);
+          const anio = anioNuevo.getFullYear();
+          fechaActual = `${anio}-${mes}-${dia}`;
+        }
+
+        campoFecha.value = fechaActual;
+      }
+
+      function obtenerFechaActual(idioma = "es-ES") {
+        const fecha = new Date();
+        const dia = fecha.getDate().toString().padStart(2, "0");
+        const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+        const anio = fecha.getFullYear();
+
+        if (idioma == "es-ES") {
+          return `${dia}-${mes}-${anio}`;
+        }
+
+        if (idioma == "en-EN") {
+          return `${anio}-${mes}-${dia}`;
+        }
+      }
+
+      function imprimirInfo(texto) {
+        //console.log(`Imprimir texto: ${texto}`);
+        const spanInfo = document.getElementById("info");
+        spanInfo.innerHTML = texto;
+      }
+
+      function copiartexto() {
+        let textoACopiar = textoArchivo; // Tu variable con el texto
+
+        // Usar la API Clipboard para copiar el contenido
+        navigator.clipboard
+          .writeText(textoACopiar)
+          .then(function () {
+            // Mostrar mensaje de éxito
+            //alert("Texto copiado: " + textoACopiar);
+            imprimirInfo("Texto copiado");
+          })
+          .catch(function (err) {
+            // Mostrar mensaje de error si no se pudo copiar
+            console.error("Error al copiar el texto:", err);
+            imprimirInfo(`Error al copiar el texto: ${err}`);
+          });
+      }
+
+      //TODO: revisar si esta es la forma correcta de ingresar datos predeterminados, creo que js tiene una forma mejor de cargar los datos por defecto
+      //TODO: mejorar funcion para que sea mas correcta
+      function borrarDatos(dato = "sesion", recargar = true) {
+        let borrando = true;
+
+        if (dato != "sesion") {
+          borrando = confirmacion("¿Desea borrar los datos guardados?");
+        }
+
+        if (borrando) {
+          localStorage.setItem(dato, "");
+          if (dato != "sesion") {
+            mensaje("Datos borrados con éxito.");
+          }
+          if (recargar) {
+            window.location.href = window.location.href;
+            return;
+          }
+          console.log("No se recargó la pagina");
+        }
+      }
+
+      function pegarArchivos() {
+        console.log("Ver recuadro");
+        const pass = consulta("Ingrese contraseña: ");
+        if (pass != "Polos") {
+          mensaje("Contraseña incorrecta");
+          return;
+        }
+        mensaje("Contraseña correcta, bienvenido admin");
+        const cuentas = { archivosError: 0, archivosOk: 0 };
+        document.getElementById("operarios").style.display = "none";
+        document.getElementById("archivo").style.display = "none";
+        document.getElementById("unir").style.display = "grid";
+        document
+          .getElementById("logo")
+          .removeEventListener("click", pegarArchivos);
+        const volver = document.getElementById("volver");
+        volver.focus();
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key == "Enter") {
+            volver.focus();
+          }
+        });
+
+        const fileDropArea = document.getElementById("fileDropArea");
+        const fileList = document.getElementById("files");
+
+        // Agrega un manejador de eventos para evitar que el navegador abra los archivos al arrastrarlos
+        fileDropArea.addEventListener("dragover", (e) => {
+          e.preventDefault();
+        });
+
+        // Agrega un manejador de eventos para manejar el evento "drop"
+        fileDropArea.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const files = e.dataTransfer.files;
+          document.getElementById("h2Drop").style.display = "flex";
+          document.getElementById("fileDropArea").style.display = "none";
+
+          // Recorre los archivos y muestra sus nombres en la lista
+          for (const file of files) {
+            const listItem = document.createElement("li");
+            listItem.textContent = file.name;
+            fileList.appendChild(listItem);
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              const contenido = e.target.result;
+              //console.log("Trabajos:", contenido.split(tagResumen)[0]);
+              const filtrado = contenido.split(tagResumen);
+              if (filtrado.length == 2) {
+                console.log("Correcto!");
+                textoCompleto += filtrado[0] + "\n";
+              } else {
+                console.log("Que pato");
+                cuentas.archivosError += 1;
+              }
+              //console.log(textoCompleto);
+              // Aquí puedes hacer lo que quieras con el contenido del archivo
+            };
+
+            reader.readAsText(file);
+          }
+          const error = document.createElement("li");
+          error.textContent = `Se encontraron ${cuentas.archivosError} archivos no compatibles`;
+          fileList.appendChild(error);
+        });
+      }
+
+      function restaurar() {
+        console.log("Restaurar");
+        /*document.getElementById("operarios").style.display = null;
+        document.getElementById("archivo").style.display = null;
+        document.getElementById("unir").style.display = null;
+        document.getElementById("pagina2").style.display = null;
+        document.getElementById("fileDropArea").style.display = null;
+        document.getElementById("h2Drop").style.display = null;*/
+        console.log("Trabajos:", textoCompleto);
+        copiarTodo(textoCompleto);
+        textoCompleto = "";
+        borrarDatos();
+      }
+
+      function copiarTodo(textoACopiar) {
+        // Usar la API Clipboard para copiar el contenido
+        navigator.clipboard
+          .writeText(textoACopiar)
+          .then(function () {
+            // Mostrar mensaje de éxito
+            mensaje("Texto copiado correctamente");
+          })
+          .catch(function (err) {
+            // Mostrar mensaje de error si no se pudo copiar
+            console.error("Error al copiar el texto:", err);
+          });
+      }
+
+      //TODO: analizar la forma de agregar un archivo externo para facilitar la lectura del programa
+      function mensaje(textoMensaje) {
+        //TODO: mostrar la ventana de información para indicar un mensaje
+        //TODO: agregar evntos para que si hace click fuera de la ventana pueda salir
+        //TODO: investigar si es posible desactibar los eventos, para que una vez que salga de la ventana, no puedan utilizarse mas esos eventos inicializados
+        alert(textoMensaje);
+      }
+
+      function confirmacion(textoConfirm) {
+        //TODO: utilizando la misma ventana, preguntamos al usuario
+        return confirm(textoConfirm);
+      }
+
+      function consulta(textoConsulta, pass = false) {
+        //TODO: como se ingresan valores predeterminados a una funcion en js?, es correcto lo que estoy haciendo de ingresar el valor predeterminado en la parte de variables? que forma es la correcta de ingresar valores?
+        //TODO: utiliza la ventana para el ingreso de datos
+        return prompt(textoConsulta).trim();
+      }
+
+      function abrirVentana(modo) {
+        //TODO: activación de la ventana
+        //TODO: logica para la creacion de botones
+      }
+
+      function comprobarPass(params) {
+        //TODO: es necesario que yo utilice una cuncion solo para este uso?
+      }
+    </script>
+  </head>
+  <body>
+    <div id="portada">
+      <div class="container">
+        <div id="logo" class="box">
+          <svg width="300" height="150" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="rgba(0, 0, 255, 0.0)" />
+            <text
+              x="50%"
+              y="37%"
+              font-size="130"
+              font-family="Arial, sans-serif"
+              font-weight="bold"
+              fill="red"
+              text-anchor="middle"
+              dy=".3em"
+            >
+              JLC
+            </text>
+            <text
+              x="50%"
+              y="90%"
+              font-size="25"
+              font-family="Arial, sans-serif"
+              font-weight="bold"
+              fill="#00f"
+              text-anchor="middle"
+              dy=".3 em"
+            >
+              Montajes Industriales
+            </text>
+          </svg>
+        </div>
+        <div id="operarios" class="box">
+          <input
+            type="text"
+            id="operario"
+            name="name"
+            class="ingresoIndex"
+            placeholder="Ingrese su nombre"
+            autocomplete="on"
+            required
+          />
+          <button id="ingresar">Ingresar</button>
+        </div>
+        <div id="archivo" class="box">
+          <label for="archivoInput">Abrir archivo existente</label>
+          <input type="file" id="archivoInput" class="ingresoIndex" />
+          <button id="abrir">Abrir</button>
+        </div>
+        <div id="unir">
+          <div id="fileDropArea">Suelta archivos aquí para unirlos</div>
+          <h2 id="h2Drop">Archivos seleccionados:</h2>
+          <ul id="files"></ul>
+          <button id="volver">Volver</button>
+        </div>
+      </div>
+    </div>
+    <div id="pagina2">
+      <h1>Trabajos JLC</h1>
+      <div id="nombre"></div>
+      <div id="lineas">
+        <!-- Aquí se agregarán dinámicamente las líneas de entrada -->
+      </div>
+
+      <div class="cajaBotones">
+        <div class="botonesContainer">
+          <div>
+            <button id="nuevaLinea" class="botonMenu"><u>N</u>uevo</button>
+          </div>
+          <div>
+            <button id="botonLimpiar" class="botonMenu botonLimpiar">
+              <u>L</u>impiar
+            </button>
+          </div>
+          <div>
+            <button id="botonCompartir" class="botonMenu">
+              <u>C</u>ompartir
+            </button>
+          </div>
+        </div>
+        <div class="tooltip">
+          <button id="botonRevisar" class="botonMenu"><u>R</u>evisar</button>
+          <span id="tooltip" class="tooltiptext">Todas las líneas válidas</span>
+        </div>
+        <div>
+          <ul id="resumen">
+            Para visualizar el resumen presione revisar
+          </ul>
+          <div id="tabla"></div>
+          <span id="info" class="cajaBotones info"></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

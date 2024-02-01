@@ -18,28 +18,63 @@ const trabajoCompleto = " Completo.";
 const eventoMover = "Mover";
 const tagResumen = "\n\nResumen:\n";
 
-//window.onload = inicio;
+window.onload = eventosDeInicio;
 
-//TODO: investigar si los eventos están ingresados de manera correcta
-//TODO: investigar porque cuando actualizo la pagina y ingreso datos nuevos, me mantiene los datos ateriores, tengo que entrar 2 veces para cambiar el nombre o el archivo guardado
-function inicio() {
-  document.getElementById("operarios").onkeydown = moverAlSiguienteCampo(
-    event,
-    "ingresar"
+function eventosDeInicio() {
+  const operario = document.getElementById("operario");
+  operario.addEventListener("keydown", (event) =>
+    moverAlSiguienteCampo(event, "ingresar")
   );
-  document.getElementById("archivoInput").onkeydown = moverAlSiguienteCampo(
-    event,
-    "ingresar"
-  );
-  document.getElementById("ingresar").onclick = ingresarConNombre;
-  document.getElementById("abrir").onclick = ingresarConArchivo;
-  document.getElementById("nuevaLinea").onclick = agregarLinea;
+  operario.focus();
+
+  document.getElementById("logo").addEventListener("click", pegarArchivos);
+
+  document
+    .getElementById("ingresar")
+    .addEventListener("click", ingresarConNombre);
+
+  document
+    .getElementById("archivoInput")
+    .addEventListener("keydown", (event) =>
+      moverAlSiguienteCampo(event, "abrir")
+    );
+
+  document
+    .getElementById("abrir")
+    .addEventListener("click", ingresarConArchivo);
+
+  document.getElementById("volver").addEventListener("click", restaurar);
+
+  document.getElementById("nuevaLinea").addEventListener("click", agregarLinea);
+
   document
     .getElementById("botonLimpiar")
-    .onclick(borrarDatos(claveTextoAbierto));
-  document.getElementById("botonCompartir").onclick = compartir;
-  document.getElementById("botonRevisar").onclick = revisarArchivo;
-  document.getElementById("botonRevisar").onmouseover = revisarArchivo;
+    .addEventListener("click", () => borrarDatos(claveTextoAbierto));
+
+  document
+    .getElementById("botonCompartir")
+    .addEventListener("click", compartir);
+
+  document
+    .getElementById("botonRevisar")
+    .addEventListener("click", revisarArchivo);
+
+  document
+    .getElementById("botonRevisar")
+    .addEventListener("mouseover", revisarArchivo);
+
+  document.addEventListener("keydown", (e) => {
+    //console.log(e);
+    if (e.altKey && e.key == "a") {
+      ingresarConArchivo();
+    }
+
+    if (e.ctrlKey && e.key == "ArrowRight") {
+      pegarArchivos();
+    }
+  });
+
+  adquirirTextoArchivo();
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
@@ -53,8 +88,6 @@ function inicio() {
         });
     });
   }
-
-  document.addEventListener("DOMContentLoaded", adquirirTextoArchivo);
 }
 
 function crearNuevaLineaHTML(lineaActual) {
@@ -98,16 +131,7 @@ function agregarEventos(lineaActual) {
   check.addEventListener("keydown", (event) =>
     moverAlSiguienteCampo(event, `plusButton${lineaActual}`)
   );
-
 }
-
-// Ejemplo de cómo usar estas funciones
-//const nuevaLinea = crearNuevaLineaHTML(1);
-// Agregar la nueva línea al DOM (supongamos que existe un contenedor con id "contenedor")
-//document.getElementById('contenedor').innerHTML += nuevaLinea;
-
-// Agregar eventos a la nueva línea
-//agregarEventos(1);
 
 function ingresarConNombre() {
   const datos = localStorage.getItem(claveTextoAbierto);
@@ -157,7 +181,28 @@ function irAIngresoHoras(nombreEstampado) {
   inicializarPagina2();
 }
 
+function eventosPagina2() {
+  document.addEventListener("keydown", function (e) {
+    if (e.altKey && e.key == "n") {
+      agregarLinea();
+    }
+
+    if (e.altKey && e.key == "l") {
+      borrarDatos(claveTextoAbierto);
+    }
+
+    if (e.altKey && e.key == "c") {
+      compartir();
+    }
+
+    if (e.altKey && e.key == "r") {
+      revisarArchivo();
+    }
+  });
+}
+
 function inicializarPagina2() {
+  eventosPagina2();
   insertarNombre();
   agregarLinea();
   insertarFecha("fecha1");
@@ -292,11 +337,12 @@ function revisarArchivo() {
   /*Burbuja de comprobacion */
   const tooltipText =
     lineasincompletas.length > 0
-      ? `Completar líneas: ${lineasincompletas.join(", ")}`
-      : "Serán guardadas todas las líneas";
+      ? `Líneas incompletas: ${lineasincompletas.join(", ")}`
+      : "Comprobación correcta";
 
   const tooltip = document.getElementById("tooltip");
   tooltip.innerHTML = tooltipText;
+  
 
   /*Visualizo resumen y tabla de trabajos*/
   verResumen();
@@ -432,25 +478,6 @@ function adquirirTextoArchivo() {
     reader.readAsText(file);
     localStorage.setItem(claveNombreArchivo, nombreArchivo);
   });
-
-  const fileAgregado = document.getElementById("archivoAgregar");
-
-  fileAgregado.addEventListener("change", function (event) {
-    let file = event.target.files[0];
-    let reader = new FileReader();
-    let nombreArchivo = "Continua edición actual";
-
-    if (file) {
-      nombreArchivo += file.name;
-    }
-
-    reader.onload = function (event) {
-      archivoAgregar += event.target.result.split("\n\n")[0] + "\n";
-      localStorage.setItem(claveTextoAbierto, archivoAgregar);
-    };
-
-    reader.readAsText(file);
-  });
 }
 
 function insertarElementos() {
@@ -544,6 +571,14 @@ function moverAlSiguienteCampo(evento, siguienteCampoId) {
   if (evento.key === "Enter") {
     evento.preventDefault();
     document.getElementById(siguienteCampoId).focus();
+
+    if (siguienteCampoId == "ingresar") {
+      ingresarConNombre();
+    }
+
+    if (siguienteCampoId == "abrir") {
+      ingresarConArchivo();
+    }
   }
 
   if (evento === eventoMover) {
@@ -652,6 +687,15 @@ function pegarArchivos() {
   document.getElementById("operarios").style.display = "none";
   document.getElementById("archivo").style.display = "none";
   document.getElementById("unir").style.display = "grid";
+  document.getElementById("logo").removeEventListener("click", pegarArchivos);
+  const volver = document.getElementById("volver");
+  volver.focus();
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key == "Enter") {
+      volver.focus();
+    }
+  });
 
   const fileDropArea = document.getElementById("fileDropArea");
   const fileList = document.getElementById("files");
