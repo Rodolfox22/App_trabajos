@@ -18,6 +18,8 @@ const trabajoCompleto = " Completo.";
 const eventoMover = "Mover";
 const tagResumen = "\n\nResumen:\n";
 
+//TODO: el programa actualmente se basa en la variable textoAbierto, que se utiliza para registrar en la cache los valores utilizados, cada tabulación indica un campo cada salto de linea indica una nueva entrada, puedo mantener la logica para que me sirva este programa?
+//TODO: definir por donde tengo que empezar para realizar el cambio. El cambio que quiero, es que se visualice la tabla al inicio, y cada vez que yo toque algun dato, me abra una ventana para actualizar ese dato, y me sea posible navegar por los siguientes datos sin problemas
 window.onload = eventosDeInicio;
 
 function eventosDeInicio() {
@@ -90,6 +92,9 @@ function eventosDeInicio() {
   }
 }
 
+//TODO: realizar comprobación para que no se creen más de 2 lineas vacias
+//TODO: para la nueva version del programa lo que quiero es que se visualice solo una linea editable y que se pueda observar en la tabla, si uno quiere editar un archivo, tiene que tocar sobre el archivo a editar y le aparece la ventana para editar. se me ocurre que puedo utilizar un link para que se pueda acomodar la ventana
+//TODO: me gustaria que cada elemento de la tabla se pueda arrastrar y soltar
 function crearNuevaLineaHTML(lineaActual) {
   return `
       <div id="linea${lineaActual}">
@@ -129,6 +134,35 @@ function agregarEventos(lineaActual) {
 
   const check = document.getElementById(`checkbox${lineaActual}`);
   check.addEventListener("keydown", (event) =>
+    moverAlSiguienteCampo(event, `plusButton${lineaActual}`)
+  );
+}
+
+// Eliminar eventos después de borrar la línea
+function eliminarEventos(lineaActual) {
+  const plusButton = document.getElementById(`plusButton${lineaActual}`);
+  plusButton.removeEventListener("click", () => insertarLinea(lineaActual));
+
+  const minusButton = document.getElementById(`minusButton${lineaActual}`);
+  minusButton.removeEventListener("click", () => eliminarLinea(lineaActual));
+
+  const fecha = document.getElementById(`fecha${lineaActual}`);
+  fecha.removeEventListener("keydown", (event) =>
+    moverAlSiguienteCampo(event, `horas${lineaActual}`)
+  );
+
+  const horas = document.getElementById(`horas${lineaActual}`);
+  horas.removeEventListener("keydown", (event) =>
+    moverAlSiguienteCampo(event, `descripcion${lineaActual}`)
+  );
+
+  const descripcion = document.getElementById(`descripcion${lineaActual}`);
+  descripcion.removeEventListener("keydown", (event) =>
+    moverAlSiguienteCampo(event, `plusButton${lineaActual}`)
+  );
+
+  const check = document.getElementById(`checkbox${lineaActual}`);
+  check.removeEventListener("keydown", (event) =>
     moverAlSiguienteCampo(event, `plusButton${lineaActual}`)
   );
 }
@@ -183,22 +217,25 @@ function irAIngresoHoras(nombreEstampado) {
 
 function eventosPagina2() {
   document.addEventListener("keydown", function (e) {
-    if (e.altKey && e.key == "n") {
-      agregarLinea();
-    }
-
-    if (e.altKey && e.key == "l") {
-      borrarDatos(claveTextoAbierto);
-    }
-
-    if (e.altKey && e.key == "c") {
-      compartir();
-    }
-
-    if (e.altKey && e.key == "r") {
-      revisarArchivo();
+    if (e.altKey) {
+      altMas(e.key);
     }
   });
+}
+
+function altMas(letra) {
+  if (letra == "n") {
+    agregarLinea();
+  }
+  if (letra == "l") {
+    borrarDatos(claveTextoAbierto);
+  }
+  if (letra == "c") {
+    compartir();
+  }
+  if (letra == "r") {
+    revisarArchivo();
+  }
 }
 
 function inicializarPagina2() {
@@ -283,7 +320,7 @@ function insertarLinea(numeroLinea) {
 function eliminarLinea(numeroLinea) {
   const linea = document.getElementById(`linea${numeroLinea}`);
   linea.remove();
-
+  eliminarEventos(numeroLinea);
   moverAlSiguienteCampo(eventoMover, "nuevaLinea");
   imprimirInfo(`La linea ${numeroLinea} fue eliminada`);
 }
@@ -320,7 +357,10 @@ function revisarArchivo() {
         textoArchivo += "\n";
       }
 
+      //Completo líneas editables
       generarTextoFilas(fechaFiltrada, horas, descripcion, isChecked);
+
+      //Completo tabla de visualización
       generarTextoHTML(fechaFiltrada, horas, descripcion, isChecked);
     } else {
       lineasincompletas.push(lineasInputs[i].id.slice(5));
@@ -342,7 +382,6 @@ function revisarArchivo() {
 
   const tooltip = document.getElementById("tooltip");
   tooltip.innerHTML = tooltipText;
-  
 
   /*Visualizo resumen y tabla de trabajos*/
   verResumen();
@@ -480,6 +519,7 @@ function adquirirTextoArchivo() {
   });
 }
 
+//TODO: para la nueva version necesito trabajar en esta funcion, segun entindo, tengo que utilizar esta funcion para crear la tabla y otra para abrir una ventana de edicion
 function insertarElementos() {
   const seccion = textoAbierto.split(tagResumen);
   const lineasAInsertar = seccion[0].split("\n");
@@ -676,13 +716,13 @@ function borrarDatos(dato = "sesion", recargar = true) {
 }
 
 function pegarArchivos() {
-  console.log("Ver recuadro");
-  const pass = consulta("Ingrese contraseña: ");
+  //console.log("Ver recuadro");
+  /*const pass = consulta("Ingrese contraseña: ");
   if (pass != "Polos") {
     mensaje("Contraseña incorrecta");
     return;
   }
-  mensaje("Contraseña correcta, bienvenido admin");
+  mensaje("Contraseña correcta, bienvenido admin");*/
   const cuentas = { archivosError: 0, archivosOk: 0 };
   document.getElementById("operarios").style.display = "none";
   document.getElementById("archivo").style.display = "none";
@@ -729,7 +769,6 @@ function pegarArchivos() {
           textoCompleto += filtrado[0] + "\n";
         } else {
           console.log("Que pato");
-          cuentas.archivosError += 1;
         }
         //console.log(textoCompleto);
         // Aquí puedes hacer lo que quieras con el contenido del archivo
@@ -737,21 +776,11 @@ function pegarArchivos() {
 
       reader.readAsText(file);
     }
-    const error = document.createElement("li");
-    error.textContent = `Se encontraron ${cuentas.archivosError} archivos no compatibles`;
-    fileList.appendChild(error);
   });
 }
 
 function restaurar() {
   console.log("Restaurar");
-  /*document.getElementById("operarios").style.display = null;
-  document.getElementById("archivo").style.display = null;
-  document.getElementById("unir").style.display = null;
-  document.getElementById("pagina2").style.display = null;
-  document.getElementById("fileDropArea").style.display = null;
-  document.getElementById("h2Drop").style.display = null;*/
-  console.log("Trabajos:", textoCompleto);
   copiarTodo(textoCompleto);
   textoCompleto = "";
   borrarDatos();
