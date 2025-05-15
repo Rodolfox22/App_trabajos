@@ -675,8 +675,10 @@ function imprimirInfo(texto) {
   spanInfo.innerHTML = texto;
 }
 
-function copiartexto() {
-  let textoACopiar = textoArchivo; // Tu variable con el texto
+function copiartexto(textoACopiar = "") {
+  if (textoACopiar === "") {
+    textoACopiar = textoArchivo; // Tu variable con el texto
+  }
 
   // Usar la API Clipboard para copiar el contenido
   navigator.clipboard
@@ -723,6 +725,7 @@ function pegarArchivos() {
     return;
   }
   mensaje("Contraseña correcta, bienvenido admin");*/
+
   const cuentas = { archivosError: 0, archivosOk: 0 };
   document.getElementById("operarios").style.display = "none";
   document.getElementById("archivo").style.display = "none";
@@ -770,8 +773,9 @@ function pegarArchivos() {
         } else {
           console.log("Que pato");
         }
-        //console.log(textoCompleto);
+        console.log(textoCompleto);
         // Aquí puedes hacer lo que quieras con el contenido del archivo
+        //Copiar contenido del archivo
       };
 
       reader.readAsText(file);
